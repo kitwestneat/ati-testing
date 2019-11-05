@@ -1,0 +1,37 @@
+{
+  "name": "ati-testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -r ts-node/register --recursive src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goenning/typescript-selenium-example.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/goenning/typescript-selenium-example/issues"
+  },
+  "homepage": "https://github.com/goenning/typescript-selenium-example#readme",
+  "dependencies": {
+    "@types/chai": "^4.2.4",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.12.5",
+    "@types/selenium-webdriver": "^4.0.5",
+    "@typescript-eslint/eslint-plugin": "^2.3.0",
+    "@typescript-eslint/parser": "^2.3.0",
+    "chai": "^4.2.0",
+    "chromedriver": "^78.0.1",
+    "eslint": "^6.3.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "mocha": "^6.2.2",
+    "query-string": "^6.8.3",
+    "reflect-metadata": "^0.1.10",
+    "selenium-webdriver": "^4.0.0-alpha.5",
+    "typescript": "^3.6.4"
+  }
+}
