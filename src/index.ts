@@ -14,6 +14,7 @@ before(function() {
     );
 
     this.driver = new webdriver.Builder().withCapabilities(webdriver.Capabilities.chrome()).setChromeOptions(options).build();
+    console.log('started chrome');
 });
 
 afterEach(function() {
@@ -40,3 +41,5 @@ afterEach(function() {
 after(function() {
     this.driver.quit();
 });
+
+// vi: ts=4 sw=4 et

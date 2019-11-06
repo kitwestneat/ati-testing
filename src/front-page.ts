@@ -1,8 +1,9 @@
 /* eslint-disable no-invalid-this */
 import * as webdriver from 'selenium-webdriver';
 import { assert } from 'chai';
+import { isDev } from './utils';
 
-const FRONTPAGE = 'https://allthatsinteresting.com';
+const FRONTPAGE = isDev() ? 'https://mirror2.pbh-network.com' : 'https://allthatsinteresting.com';
 const LOGO_ALT_TEXT_HEADER = 'All That\'s Interesting';
 const GAM_URL = 'https://securepubads.g.doubleclick.net/gampad/ads?';
 const AMZN_URL = 'https://c.amazon-adsystem.com/e/dtb/bid';
@@ -59,6 +60,7 @@ async function scrollToBottom(driver: webdriver.ThenableWebDriver): Promise<any>
 describe('frontpage tests', function() {
     this.timeout(60000);
     before(async function() {
+        console.log('getting', FRONTPAGE);
         await this.driver.get(FRONTPAGE);
         await sleep(2000);
     });
@@ -98,3 +100,5 @@ describe('frontpage tests', function() {
         assert(end_mrec_bids > start_mrec_bids, 'we lazy loaded some ads');
     });
 });
+
+// vi: ts=4 sw=4 et
