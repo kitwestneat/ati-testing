@@ -1,19 +1,21 @@
-/* eslint-disable no-invalid-this */
 import * as fs from 'fs';
 import * as webdriver from 'selenium-webdriver';
 import * as chrome from 'selenium-webdriver/chrome';
 
 import { MochaState } from './types';
+import { isDev } from './utils';
 
 before(function() {
     // initializing chrome driver
     const options = new chrome.Options();
-    options.addArguments(
-        'headless',
-        'disable-gpu',
-    );
+    if (!isDev()) {
+        options.addArguments('headless', 'disable-gpu');
+    }
 
-    this.driver = new webdriver.Builder().withCapabilities(webdriver.Capabilities.chrome()).setChromeOptions(options).build();
+    this.driver = new webdriver.Builder()
+        .withCapabilities(webdriver.Capabilities.chrome())
+        .setChromeOptions(options)
+        .build();
     console.log('started chrome');
 });
 

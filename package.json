@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -r ts-node/register --recursive src/*.ts",
-    "dev": "NODE_ENV=dev mocha -r ts-node/register --recursive src/*.ts"
+    "test": "yarn mk --recursive src/*.ts",
+    "dev": "NODE_ENV=dev yarn test",
+    "mk": "mocha -r ts-node/register",
+    "dmk": "NODE_ENV=dev yarn mk"
   },
   "repository": {
     "type": "git",

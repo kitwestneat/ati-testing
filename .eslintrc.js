@@ -36,6 +36,7 @@ module.exports = {
         'new-cap': ['error', { capIsNewExceptions: ['Deferred'] }],
         'guard-for-in': 'off',
         'no-debugger': 'off',
+        'no-invalid-this': 'off',
     },
     globals: {
         // Globals provided by mocha. 'false' means they can't be written to.
