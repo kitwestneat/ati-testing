@@ -65,3 +65,12 @@ export async function scrollToBottom(driver: webdriver.ThenableWebDriver): Promi
 export function pbh_config_get(driver: webdriver.ThenableWebDriver, key: string): Promise<any> {
     return driver.executeScript((k: string) => (top as any).pbh_config_get(k), key);
 }
+
+export function clickElement(
+    driver: webdriver.ThenableWebDriver,
+    element: webdriver.WebElement
+): Promise<any> {
+    return driver.executeScript((el: any) => {
+        (top as any).$(el).click();
+    }, element);
+}

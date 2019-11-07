@@ -6,6 +6,7 @@ import { MochaState } from './types';
 import { isDev, initNetworkEntries } from './utils';
 
 before(async function() {
+    this.timeout(60000);
     // initializing chrome driver
     const options = new chrome.Options();
     if (!isDev()) {

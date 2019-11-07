@@ -11,7 +11,6 @@ import {
 import { sleep, getNetworkEntries, scrollDown, pbh_config_get } from './utils';
 
 describe('single page tests', function() {
-    this.timeout(60000);
     before(async function() {
         console.log('getting', SINGLE_POST);
         await this.driver.get(SINGLE_POST);
