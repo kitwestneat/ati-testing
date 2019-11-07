@@ -3,9 +3,9 @@ import * as webdriver from 'selenium-webdriver';
 import * as chrome from 'selenium-webdriver/chrome';
 
 import { MochaState } from './types';
-import { isDev } from './utils';
+import { isDev, initNetworkEntries } from './utils';
 
-before(function() {
+before(async function() {
     // initializing chrome driver
     const options = new chrome.Options();
     if (!isDev()) {
@@ -17,6 +17,7 @@ before(function() {
         .setChromeOptions(options)
         .build();
     console.log('started chrome');
+    await initNetworkEntries(this.driver);
 });
 
 afterEach(function() {
