@@ -2,15 +2,11 @@ import * as fs from 'fs';
 import * as webdriver from 'selenium-webdriver';
 import * as chrome from 'selenium-webdriver/chrome';
 
-import { MochaState } from './types';
-import { isDev, initNetworkEntries, listRandom } from './utils';
+import { MochaState, } from './types';
+import { isDev, initNetworkEntries, listRandom, getNetworkEntries } from './utils';
 import { WINDOW_SIZES } from './constants';
 
-interface WithDriver {
-    driver: webdriver.ThenableWebDriver;
-}
-
-before(async function(this: any & WithDriver) {
+before(async function () {
     // initializing chrome driver
     const options = new chrome.Options();
     if (!isDev()) {
@@ -31,13 +27,14 @@ before(async function(this: any & WithDriver) {
     } else {
         console.log('testing size', windowSize);
         this.driver.manage().window().setRect(windowSize);
+        this.windowSize = windowSize;
     }
 
     console.log('started chrome');
     await initNetworkEntries(this.driver);
 });
 
-afterEach(function() {
+afterEach(async function () {
     if (!this.currentTest) {
         return;
     }
@@ -51,6 +48,12 @@ afterEach(function() {
             console.log(`Saving Screenshot as: ${screenshotPath}`);
             fs.writeFileSync(screenshotPath, data, 'base64');
         });
+        try {
+            const entries = await getNetworkEntries(this.driver);
+            fs.writeFileSync(`screenshots/${testCaseName}`, JSON.stringify(entries, null, 4));
+        } catch (e) {
+            console.error('error writing HAR')
+        }
     } else if (testCaseStatus === 'passed') {
         console.log(`Test: ${testCaseName}, Status: Passed!`);
     } else {
@@ -58,7 +61,7 @@ afterEach(function() {
     }
 });
 
-after(function() {
+after(function () {
     this.driver.quit();
 });
 
