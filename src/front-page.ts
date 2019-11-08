@@ -11,32 +11,37 @@ import {
 } from './constants';
 import { sleep, getNetworkEntries, scrollToBottom } from './utils';
 
-describe('frontpage tests', function () {
+describe('frontpage tests', function() {
     this.timeout(60000);
-    before(async function () {
+    before(async function() {
         console.log('getting', FRONTPAGE);
         await this.driver.get(FRONTPAGE);
         console.log('got', FRONTPAGE);
         await sleep(4000);
     });
-    it('find logo', async function () {
+    it('find logo', async function() {
         const logo = await this.driver.findElements(
             webdriver.By.css(`img[alt^="${LOGO_ALT_TEXT_HEADER}"`)
         );
         assert(logo.length > 0, 'logo exists');
     });
-    it('check Amazon bids for Adhesion & Skybox', async function () {
+    it('check Amazon bids for Adhesion & Skybox', async function() {
         const entries = await getNetworkEntries(this.driver);
 
-        const skybox_adhesion_bids = entries.filter(
+        const skybox_bid = entries.filter(
             ({ name }: { name: string }) =>
                 name.startsWith(AMZN_URL) &&
-                (name.includes(SKYBOX_UNIT_NAME) || name.includes(ADHESION_UNIT_NAME))
+                name.includes(SKYBOX_UNIT_NAME)
         );
-
-        assert(skybox_adhesion_bids.length == 2, 'found adhesion and skybox amazon bid requests');
+        const adhesion_bid = entries.filter(
+            ({ name }: { name: string }) =>
+                name.startsWith(AMZN_URL) &&
+                name.includes(ADHESION_UNIT_NAME)
+        );
+        assert(skybox_bid.length == 1, 'found skybox amazon bid requests');
+        assert(adhesion_bid.length == 1, 'found adhesion amazon bid requests');
     });
-    it('mrecs are lazy loaded', async function () {
+    it('mrecs are lazy loaded', async function() {
         const start_entries = await getNetworkEntries(this.driver);
         const start_mrec_bids = start_entries.filter(
             ({ name }: { name: string }) =>
@@ -53,7 +58,7 @@ describe('frontpage tests', function () {
 
         assert(end_mrec_bids > start_mrec_bids, 'we lazy loaded some ads');
     });
-    it('test analytics loaded', async function () {
+    it('test analytics loaded', async function() {
         const entries = await getNetworkEntries(this.driver);
         const analytics_calls = entries.filter(
             ({ name }: { name: string }) =>

@@ -50,7 +50,7 @@ afterEach(async function() {
         });
         try {
             const entries = await getNetworkEntries(this.driver);
-            fs.writeFileSync(`screenshots/${testCaseName}`, JSON.stringify(entries, null, 4));
+            fs.writeFileSync(`screenshots/${testCaseName}.har`, JSON.stringify(entries, null, 4));
         } catch (e) {
             console.error('error writing HAR');
         }
