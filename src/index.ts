@@ -2,11 +2,11 @@ import * as fs from 'fs';
 import * as webdriver from 'selenium-webdriver';
 import * as chrome from 'selenium-webdriver/chrome';
 
-import { MochaState, } from './types';
+import { MochaState } from './types';
 import { isDev, initNetworkEntries, listRandom, getNetworkEntries } from './utils';
 import { WINDOW_SIZES } from './constants';
 
-before(async function () {
+before(async function() {
     // initializing chrome driver
     const options = new chrome.Options();
     if (!isDev()) {
@@ -34,7 +34,7 @@ before(async function () {
     await initNetworkEntries(this.driver);
 });
 
-afterEach(async function () {
+afterEach(async function() {
     if (!this.currentTest) {
         return;
     }
@@ -52,7 +52,7 @@ afterEach(async function () {
             const entries = await getNetworkEntries(this.driver);
             fs.writeFileSync(`screenshots/${testCaseName}`, JSON.stringify(entries, null, 4));
         } catch (e) {
-            console.error('error writing HAR')
+            console.error('error writing HAR');
         }
     } else if (testCaseStatus === 'passed') {
         console.log(`Test: ${testCaseName}, Status: Passed!`);
@@ -61,7 +61,7 @@ afterEach(async function () {
     }
 });
 
-after(function () {
+after(function() {
     this.driver.quit();
 });
 

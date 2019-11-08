@@ -1,9 +1,9 @@
-import * as webdriver from 'selenium-webdriver';
-import { Context } from 'mocha';
-
 export type MochaState = 'failed' | 'passed' | undefined;
 
 /*
+import * as webdriver from 'selenium-webdriver';
+import { Context } from 'mocha';
+
 export interface TestingState {
     driver: webdriver.ThenableWebDriver;
     windowSize: { width: number; height: number }

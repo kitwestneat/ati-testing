@@ -76,6 +76,6 @@ export function listRandom<T>(list: T[]): T | undefined {
     return list[i];
 }
 
-export function isMobile(width: number) {
+export function isMobile(width: number): boolean {
     return width < 728;
 }

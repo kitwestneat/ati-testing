@@ -17,6 +17,7 @@ export const LOGO_ALT_TEXT_HEADER = 'All That\'s Interesting';
 
 export const GAM_URL = 'https://securepubads.g.doubleclick.net/gampad/ads?';
 export const AMZN_URL = 'https://c.amazon-adsystem.com/e/dtb/bid';
+export const ANALYTICS_URL = 'https://www.google-analytics.com/collect?';
 
 export const SKYBOX_UNIT_NAME = 'ATISkybox';
 export const ADHESION_UNIT_NAME = 'ATIAdhesion';
