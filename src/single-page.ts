@@ -16,7 +16,7 @@ describe('single page tests', function() {
         console.log('getting', SINGLE_POST);
         await this.driver.get(SINGLE_POST);
         console.log('got post!');
-        await sleep(2000);
+        await sleep(4000);
     });
     it('find footer', async function() {
         const footer = await this.driver.findElements(webdriver.By.css('footer.main-footer'));
