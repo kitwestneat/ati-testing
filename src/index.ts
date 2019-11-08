@@ -3,9 +3,14 @@ import * as webdriver from 'selenium-webdriver';
 import * as chrome from 'selenium-webdriver/chrome';
 
 import { MochaState } from './types';
-import { isDev, initNetworkEntries } from './utils';
+import { isDev, initNetworkEntries, listRandom } from './utils';
+import { WINDOW_SIZES } from './constants';
 
-before(async function() {
+interface WithDriver {
+    driver: webdriver.ThenableWebDriver;
+}
+
+before(async function(this: any & WithDriver) {
     // initializing chrome driver
     const options = new chrome.Options();
     if (!isDev()) {
@@ -19,6 +24,14 @@ before(async function() {
         .withCapabilities(capa)
         .setChromeOptions(options)
         .build();
+
+    const windowSize = listRandom(WINDOW_SIZES);
+    if (!windowSize) {
+        console.error('could not select random window size');
+    } else {
+        console.log('testing size', windowSize);
+        this.driver.manage().window().setRect(windowSize);
+    }
 
     console.log('started chrome');
     await initNetworkEntries(this.driver);

@@ -14,7 +14,7 @@ describe('single page tests', function() {
     before(async function() {
         console.log('getting', SINGLE_POST);
         await this.driver.get(SINGLE_POST);
-	console.log('got post!');
+        console.log('got post!');
         await sleep(2000);
     });
     it('find footer', async function() {

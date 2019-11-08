@@ -9,7 +9,7 @@ describe('Gallery post tests', function() {
     before(async function() {
         console.log('getting', GALLERY_POST);
         await this.driver.get(GALLERY_POST);
-	console.log('got post!');
+        console.log('got post!');
         await sleep(2000);
     });
     it('open gallery', async function() {

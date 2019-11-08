@@ -66,11 +66,12 @@ export function pbh_config_get(driver: webdriver.ThenableWebDriver, key: string)
     return driver.executeScript((k: string) => (top as any).pbh_config_get(k), key);
 }
 
-export function clickElement(
-    driver: webdriver.ThenableWebDriver,
-    element: webdriver.WebElement
-): Promise<any> {
-    return driver.executeScript((el: any) => {
-        (top as any).$(el).click();
-    }, element);
+export function listRandom<T>(list: T[]): T | undefined {
+    if (list.length === 0) {
+        return;
+    }
+
+    const i = Math.floor(list.length * Math.random());
+
+    return list[i];
 }

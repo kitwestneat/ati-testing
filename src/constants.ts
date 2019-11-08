@@ -1,5 +1,11 @@
 import { isDev } from './utils';
 
+export const WINDOW_SIZES = [
+    { width: 375, height: 812 }, // iPhoneX
+    { width: 768, height: 1024 }, // iPad
+    { width: 1440, height: 633 }, // laptop
+];
+
 export const SITE_BASE = isDev() ?
     'https://mirror2.pbh-network.com' :
     'https://allthatsinteresting.com';
@@ -17,3 +23,4 @@ export const ADHESION_UNIT_NAME = 'ATIAdhesion';
 export const MREC_UNIT_NAME = 'AllThatsInterestingRectangle';
 export const INLINE_UNIT_NAME = 'ATIInline';
 export const GALLERY_FLOORBOARD_UNIT_NAME = 'ATIGalleryFloorboard';
+

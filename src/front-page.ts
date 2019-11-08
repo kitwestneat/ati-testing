@@ -6,7 +6,7 @@ import {
     AMZN_URL,
     SKYBOX_UNIT_NAME,
     ADHESION_UNIT_NAME,
-    MREC_UNIT_NAME
+    MREC_UNIT_NAME,
 } from './constants';
 import { sleep, getNetworkEntries, scrollToBottom } from './utils';
 
