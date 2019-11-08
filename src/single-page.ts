@@ -11,33 +11,34 @@ import {
 } from './constants';
 import { sleep, getNetworkEntries, scrollDown, pbh_config_get } from './utils';
 
-describe('single page tests', function() {
-    before(async function() {
+describe('single page tests', function () {
+    before(async function () {
         console.log('getting', SINGLE_POST);
         await this.driver.get(SINGLE_POST);
         console.log('got post!');
         await sleep(4000);
     });
-    it('find footer', async function() {
+    it('find footer', async function () {
         const footer = await this.driver.findElements(webdriver.By.css('footer.main-footer'));
         assert(footer.length > 0, 'footer exists');
     });
     // this might not work on mobile (skybox supression option)
-    it('check Amazon bids for Adhesion & Skybox', async function() {
+    it('check Amazon bids for Adhesion & Skybox', async function () {
         const entries = await getNetworkEntries(this.driver);
-
-        const amazon_bids = entries.filter(({ name }: { name: string }) =>
-            name.startsWith(AMZN_URL)
+        const skybox_bid = entries.filter(
+            ({ name }: { name: string }) =>
+                name.startsWith(AMZN_URL) &&
+                name.includes(SKYBOX_UNIT_NAME)
         );
-
-        const bid_info: any = queryString.parseUrl(amazon_bids[0].name);
-        const slots = bid_info.query.slots;
-        assert(
-            slots.includes(ADHESION_UNIT_NAME) && slots.includes(SKYBOX_UNIT_NAME),
-            'Adhesion and Skybox bids exist'
+        const adhesion_bid = entries.filter(
+            ({ name }: { name: string }) =>
+                name.startsWith(AMZN_URL) &&
+                name.includes(ADHESION_UNIT_NAME)
         );
+        assert(skybox_bid.length == 1, 'found skybox amazon bid requests');
+        assert(adhesion_bid.length == 1, 'found adhesion amazon bid requests');
     });
-    it('inlines are lazy loaded', async function() {
+    it('inlines are lazy loaded', async function () {
         const start_entries = await getNetworkEntries(this.driver);
         const start_inline_bids = start_entries.filter(
             ({ name }: { name: string }) =>
@@ -58,7 +59,7 @@ describe('single page tests', function() {
 
         assert(end_inline_bids.length > start_inline_bids.length, 'we lazy loaded some ads');
     });
-    it('test analytics loaded', async function() {
+    it('test analytics loaded', async function () {
         const entries = await getNetworkEntries(this.driver);
         const analytics_calls = entries.filter(
             ({ name }: { name: string }) =>
