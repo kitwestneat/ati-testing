@@ -12,10 +12,14 @@ before(async function() {
         options.addArguments('headless', 'disable-gpu');
     }
 
+    const capa = webdriver.Capabilities.chrome();
+    capa.set('pageLoadStrategy', 'eager');
+
     this.driver = new webdriver.Builder()
-        .withCapabilities(webdriver.Capabilities.chrome())
+        .withCapabilities(capa)
         .setChromeOptions(options)
         .build();
+
     console.log('started chrome');
     await initNetworkEntries(this.driver);
 });

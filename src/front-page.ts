@@ -6,7 +6,7 @@ import {
     AMZN_URL,
     SKYBOX_UNIT_NAME,
     ADHESION_UNIT_NAME,
-    MREC_UNIT_NAME,
+    MREC_UNIT_NAME
 } from './constants';
 import { sleep, getNetworkEntries, scrollToBottom } from './utils';
 
@@ -15,7 +15,8 @@ describe('frontpage tests', function() {
     before(async function() {
         console.log('getting', FRONTPAGE);
         await this.driver.get(FRONTPAGE);
-        await sleep(2000);
+        console.log('got', FRONTPAGE);
+        await sleep(4000);
     });
     it('find logo', async function() {
         const logo = await this.driver.findElements(
