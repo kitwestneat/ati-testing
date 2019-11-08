@@ -5,7 +5,7 @@ export const SITE_BASE = isDev() ?
     'https://allthatsinteresting.com';
 export const FRONTPAGE = SITE_BASE;
 export const SINGLE_POST = SITE_BASE + '/emma-lazarus';
-export const GALLERY_POST = SITE_BASE + '/kurt-cobain-suicide-photos';
+export const GALLERY_POST = SITE_BASE + '/toraja-death-ritual';
 
 export const LOGO_ALT_TEXT_HEADER = 'All That\'s Interesting';
 

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "yarn mk --recursive src/*.ts",
     "dev": "NODE_ENV=dev yarn test",
-    "mk": "mocha -r ts-node/register",
+    "mk": "mocha -r ts-node/register -t 6000000",
     "dmk": "NODE_ENV=dev yarn mk"
   },
   "repository": {

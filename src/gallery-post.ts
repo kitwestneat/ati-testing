@@ -6,13 +6,13 @@ import { GALLERY_POST, GALLERY_FLOORBOARD_UNIT_NAME, AMZN_URL } from './constant
 const GALLERY_BUTTON_TEXT = 'View Gallery';
 
 describe('Gallery post tests', function() {
-    this.timeout(60000);
     before(async function() {
         console.log('getting', GALLERY_POST);
         await this.driver.get(GALLERY_POST);
+	console.log('got post!');
         await sleep(2000);
     });
-    it.only('open gallery', async function() {
+    it('open gallery', async function() {
         const driver = this.driver as webdriver.ThenableWebDriver;
         const openButton = await driver.findElements(
             webdriver.By.xpath(`//div[text()='${GALLERY_BUTTON_TEXT}']`)
