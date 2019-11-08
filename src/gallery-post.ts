@@ -10,8 +10,8 @@ import {
 
 const GALLERY_BUTTON_TEXT = 'View Gallery';
 
-describe('Gallery post tests', function() {
-    before(async function() {
+describe('Gallery post tests', function () {
+    before(async function () {
         if (this.windowSize && isMobile(this.windowSize.width)) {
             this.skip();
         }
@@ -19,17 +19,17 @@ describe('Gallery post tests', function() {
         console.log('getting', GALLERY_POST);
         await this.driver.get(GALLERY_POST);
         console.log('got post!');
-        await sleep(2000);
+        await sleep(4000);
     });
 
-    it('ad div not visible before open', async function() {
+    it('ad div not visible before open', async function () {
         const driver = this.driver;
         const galleryAdDiv = await driver.findElements(
             webdriver.By.css('.gallery-descriptions-wrap > .mrec-wrap > div')
         );
         assert(!await galleryAdDiv[0].isDisplayed(), 'Ad div is not visible before click');
     });
-    it('no gal floor bids before open', async function() {
+    it('no gal floor bids before open', async function () {
         const entries = await getNetworkEntries(this.driver);
         const gallery_bids = entries.filter(({ name }: { name: string }) =>
             name.startsWith(AMZN_URL) && name.includes(GALLERY_FLOORBOARD_UNIT_NAME)
@@ -37,17 +37,17 @@ describe('Gallery post tests', function() {
         assert(gallery_bids.length === 0, 'No gallery floorboard Amazon bids before opening');
     });
 
-    describe('open gallery', function() {
-        before(async function() {
+    describe('open gallery', function () {
+        before(async function () {
             const driver = this.driver;
             const openButton = await driver.findElements(
                 webdriver.By.xpath(`//div[text()='${GALLERY_BUTTON_TEXT}']`)
             );
 
             await openButton[0].click();
-            await sleep(1000);
+            await sleep(2000);
         });
-        it('check ad div visible', async function() {
+        it('check ad div visible', async function () {
             const driver = this.driver;
 
             const galleryAdDiv = await driver.findElements(
@@ -56,7 +56,7 @@ describe('Gallery post tests', function() {
             assert(await galleryAdDiv[0].isDisplayed(), 'Ad div is visible after click');
         });
 
-        it('check gal floor bids', async function() {
+        it('check gal floor bids', async function () {
             const post_entries = await getNetworkEntries(this.driver);
             const post_gallery_bids = post_entries.filter(({ name }: { name: string }) =>
                 name.startsWith(AMZN_URL) && name.includes(GALLERY_FLOORBOARD_UNIT_NAME)
@@ -64,7 +64,7 @@ describe('Gallery post tests', function() {
             assert(post_gallery_bids.length !== 0, 'Gallery floorboard Amazon bids after opening');
         });
 
-        it('click next and see if adhesion and gal floor refresh', async function() {
+        it('click next and see if adhesion and gal floor refresh', async function () {
             const driver = this.driver as webdriver.ThenableWebDriver;
 
             const post_entries = await getNetworkEntries(driver);
