@@ -79,3 +79,12 @@ export function listRandom<T>(list: T[]): T | undefined {
 export function isMobile(width: number): boolean {
     return width < 728;
 }
+
+export function clickElement(
+    driver: webdriver.ThenableWebDriver,
+    element: webdriver.WebElement
+): Promise<any> {
+    return driver.executeScript((el: any) => {
+        (top as any).$(el).click();
+    }, element);
+}

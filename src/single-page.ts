@@ -1,4 +1,3 @@
-import queryString from 'query-string';
 import * as webdriver from 'selenium-webdriver';
 import { assert } from 'chai';
 import {
@@ -9,21 +8,21 @@ import {
     SKYBOX_UNIT_NAME,
     ANALYTICS_URL,
 } from './constants';
-import { sleep, getNetworkEntries, scrollDown, pbh_config_get } from './utils';
+import { sleep, getNetworkEntries, scrollDown, pbh_config_get, isMobile } from './utils';
 
-describe('single page tests', function () {
-    before(async function () {
+describe('single page tests', function() {
+    before(async function() {
         console.log('getting', SINGLE_POST);
         await this.driver.get(SINGLE_POST);
         console.log('got post!');
         await sleep(4000);
     });
-    it('find footer', async function () {
+    it('find footer', async function() {
         const footer = await this.driver.findElements(webdriver.By.css('footer.main-footer'));
         assert(footer.length > 0, 'footer exists');
     });
     // this might not work on mobile (skybox supression option)
-    it('check Amazon bids for Adhesion & Skybox', async function () {
+    it('check Amazon bids for Adhesion & Skybox', async function() {
         const entries = await getNetworkEntries(this.driver);
         const skybox_bid = entries.filter(
             ({ name }: { name: string }) =>
@@ -35,10 +34,15 @@ describe('single page tests', function () {
                 name.startsWith(AMZN_URL) &&
                 name.includes(ADHESION_UNIT_NAME)
         );
-        assert(skybox_bid.length == 1, 'found skybox amazon bid requests');
+        const mobile_skybox_enabled = await pbh_config_get(this.driver, 'enable_mobile_skybox');
+        if (this.windowSize && isMobile(this.windowSize.width) && !mobile_skybox_enabled) {
+            assert(skybox_bid.length == 0, 'skybox supressed on mobile');
+        } else {
+            assert(skybox_bid.length == 1, 'found skybox amazon bid requests');
+        }
         assert(adhesion_bid.length == 1, 'found adhesion amazon bid requests');
     });
-    it('inlines are lazy loaded', async function () {
+    it('inlines are lazy loaded', async function() {
         const start_entries = await getNetworkEntries(this.driver);
         const start_inline_bids = start_entries.filter(
             ({ name }: { name: string }) =>
@@ -59,7 +63,7 @@ describe('single page tests', function () {
 
         assert(end_inline_bids.length > start_inline_bids.length, 'we lazy loaded some ads');
     });
-    it('test analytics loaded', async function () {
+    it('test analytics loaded', async function() {
         const entries = await getNetworkEntries(this.driver);
         const analytics_calls = entries.filter(
             ({ name }: { name: string }) =>
