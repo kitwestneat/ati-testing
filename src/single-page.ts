@@ -50,10 +50,12 @@ describe('single page tests', function() {
         );
 
         const inline_load_count = await pbh_config_get(this.driver, 'inline_load_count');
-        for (let i = 0; i < inline_load_count * 2; i++) {
+	console.log('scrolling', inline_load_count*3 + 1);
+        for (let i = 0; i < inline_load_count * 3 + 1; i++) {
             await scrollDown(this.driver);
+            await sleep(2000);
         }
-        await sleep(6000);
+        await sleep(4000);
 
         const end_entries = await getNetworkEntries(this.driver);
         const end_inline_bids = end_entries.filter(

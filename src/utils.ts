@@ -3,6 +3,8 @@ import * as webdriver from 'selenium-webdriver';
 export const isDev = (): boolean =>
     !!process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase().startsWith('dev');
 
+export const isSfo = (): boolean => !!process.env.SFO_TEST;
+
 export function sleep(n?: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, n));
 }

@@ -17,7 +17,7 @@ describe('frontpage tests', function() {
         console.log('getting', FRONTPAGE);
         await this.driver.get(FRONTPAGE);
         console.log('got', FRONTPAGE);
-        await sleep(4000);
+        await sleep(6000);
     });
     it('find logo', async function() {
         const logo = await this.driver.findElements(
@@ -25,7 +25,7 @@ describe('frontpage tests', function() {
         );
         assert(logo.length > 0, 'logo exists');
     });
-    it('check Amazon bids for Adhesion & Skybox', async function() {
+    it('frontpage check Amazon bids for Adhesion & Skybox', async function() {
         const entries = await getNetworkEntries(this.driver);
 
         const skybox_bid = entries.filter(
@@ -38,8 +38,17 @@ describe('frontpage tests', function() {
                 name.startsWith(AMZN_URL) &&
                 name.includes(ADHESION_UNIT_NAME)
         );
-        assert(skybox_bid.length == 1, 'found skybox amazon bid requests');
-        assert(adhesion_bid.length == 1, 'found adhesion amazon bid requests');
+        if (skybox_bid.length == 0) {
+            console.log(entries);
+        }
+        assert(skybox_bid.length >= 1, 'found skybox amazon bid requests');
+        assert(adhesion_bid.length >= 1, 'found adhesion amazon bid requests');
+        if (skybox_bid.length > 1) {
+            console.warn('found more than one skybox bid');
+        }
+        if (adhesion_bid.length > 1) {
+            console.warn('found more than one adhesion bid');
+        }
     });
     it('mrecs are lazy loaded', async function() {
         const start_entries = await getNetworkEntries(this.driver);
