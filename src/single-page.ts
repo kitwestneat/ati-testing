@@ -26,13 +26,11 @@ describe('single page tests', function() {
         const entries = await getNetworkEntries(this.driver);
         const skybox_bid = entries.filter(
             ({ name }: { name: string }) =>
-                name.startsWith(AMZN_URL) &&
-                name.includes(SKYBOX_UNIT_NAME)
+                name.startsWith(AMZN_URL) && name.includes(SKYBOX_UNIT_NAME)
         );
         const adhesion_bid = entries.filter(
             ({ name }: { name: string }) =>
-                name.startsWith(AMZN_URL) &&
-                name.includes(ADHESION_UNIT_NAME)
+                name.startsWith(AMZN_URL) && name.includes(ADHESION_UNIT_NAME)
         );
         const mobile_skybox_enabled = await pbh_config_get(this.driver, 'enable_mobile_skybox');
         if (this.windowSize && isMobile(this.windowSize.width) && !mobile_skybox_enabled) {
@@ -43,33 +41,37 @@ describe('single page tests', function() {
         assert(adhesion_bid.length == 1, 'found adhesion amazon bid requests');
     });
     it('inlines are lazy loaded', async function() {
-        const start_entries = await getNetworkEntries(this.driver);
+        const driver = this.driver as webdriver.ThenableWebDriver;
+        const start_entries = await getNetworkEntries(driver);
         const start_inline_bids = start_entries.filter(
             ({ name }: { name: string }) =>
                 name.startsWith(AMZN_URL) && name.includes(INLINE_UNIT_NAME)
         );
 
-        const inline_load_count = await pbh_config_get(this.driver, 'inline_load_count');
-	console.log('scrolling', inline_load_count*3 + 1);
-        for (let i = 0; i < inline_load_count * 3 + 1; i++) {
-            await scrollDown(this.driver);
-            await sleep(2000);
+        const inline_load_count = await pbh_config_get(driver, 'inline_load_count');
+        for (let i = 0; i < inline_load_count * 2 + 1; i++) {
+            await scrollDown(driver);
         }
-        await sleep(4000);
+        const loadedInline = await driver.wait(
+            webdriver.until.elementLocated(webdriver.By.css('div.pbh-lazy-inline.pbh_inline')),
+            60000
+        );
+        assert(loadedInline, 'lazy loaded an inline unit');
 
-        const end_entries = await getNetworkEntries(this.driver);
+        await sleep(2000);
+
+        const end_entries = await getNetworkEntries(driver);
         const end_inline_bids = end_entries.filter(
             ({ name }: { name: string }) =>
                 name.startsWith(AMZN_URL) && name.includes(INLINE_UNIT_NAME)
         );
 
-        assert(end_inline_bids.length > start_inline_bids.length, 'we lazy loaded some ads');
+        assert(end_inline_bids.length > start_inline_bids.length, 'Amazon bid on lazy loaded ads');
     });
     it('test analytics loaded', async function() {
         const entries = await getNetworkEntries(this.driver);
-        const analytics_calls = entries.filter(
-            ({ name }: { name: string }) =>
-                name.startsWith(ANALYTICS_URL)
+        const analytics_calls = entries.filter(({ name }: { name: string }) =>
+            name.startsWith(ANALYTICS_URL)
         );
 
         assert(analytics_calls.length > 0, 'analytics are collected');
