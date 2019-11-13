@@ -12,6 +12,7 @@ export const SITE_BASE = isDev() ?
 export const FRONTPAGE = SITE_BASE;
 export const SINGLE_POST = SITE_BASE + '/emma-lazarus';
 export const GALLERY_POST = SITE_BASE + '/toraja-death-ritual';
+export const ERROR_404_PAGE = SITE_BASE + '/this-page-should-404';
 
 export const LOGO_ALT_TEXT_HEADER = 'All That\'s Interesting';
 
