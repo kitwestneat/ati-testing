@@ -10,7 +10,7 @@ import {
 } from './constants';
 import { sleep, getNetworkEntries, scrollDown, pbh_config_get, isMobile } from './utils';
 
-describe.only('404 page tests', function() {
+describe('404 page tests', function() {
     before(async function() {
         console.log('getting', ERROR_404_PAGE);
         await this.driver.get(ERROR_404_PAGE);
