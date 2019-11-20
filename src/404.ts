@@ -3,12 +3,11 @@ import { assert } from 'chai';
 import {
     ERROR_404_PAGE,
     AMZN_URL,
-    INLINE_UNIT_NAME,
     ADHESION_UNIT_NAME,
     SKYBOX_UNIT_NAME,
     ANALYTICS_URL,
 } from './constants';
-import { sleep, getNetworkEntries, scrollDown, pbh_config_get, isMobile } from './utils';
+import { sleep, getNetworkEntries, pbh_config_get, isMobile } from './utils';
 
 describe('404 page tests', function() {
     before(async function() {

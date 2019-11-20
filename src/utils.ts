@@ -94,3 +94,23 @@ export function clickElement(
         (top as any).$(el).click();
     }, element);
 }
+
+export function circJson(obj: any): string {
+    const cache: any[] = [];
+    const objJson = JSON.stringify(
+        obj,
+        (_k: any, value: any) => {
+            if (typeof value === 'object' && value !== null) {
+                if (cache.includes(value)) {
+                    return;
+                }
+                cache.push(value);
+            }
+
+            return value;
+        },
+        4
+    );
+
+    return objJson;
+}

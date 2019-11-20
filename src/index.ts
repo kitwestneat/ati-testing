@@ -3,8 +3,15 @@ import * as webdriver from 'selenium-webdriver';
 import * as chrome from 'selenium-webdriver/chrome';
 
 import { MochaState } from './types';
-import { isDev, isSfo, initNetworkEntries, listRandom, getNetworkEntries,
-        getPbhDebug } from './utils';
+import {
+    isDev,
+    isSfo,
+    initNetworkEntries,
+    listRandom,
+    getNetworkEntries,
+    getPbhDebug,
+    circJson,
+} from './utils';
 import { WINDOW_SIZES } from './constants';
 
 before(async function() {
@@ -16,8 +23,10 @@ before(async function() {
     if (isSfo()) {
         console.log('mapping ATI to use west coast servers');
 
-        options.addArguments('host-resolver-rules=MAP allthatsinteresting.com 157.230.169.90,'
-                            + ' MAP www.allthatsinteresting.com 157.230.169.90');
+        options.addArguments(
+            'host-resolver-rules=MAP allthatsinteresting.com 157.230.169.90,' +
+                ' MAP www.allthatsinteresting.com 157.230.169.90'
+        );
     }
 
     const prefs = new webdriver.logging.Preferences();
@@ -37,7 +46,10 @@ before(async function() {
         console.error('could not select random window size');
     } else {
         console.log('testing size', windowSize);
-        this.driver.manage().window().setRect(windowSize);
+        this.driver
+            .manage()
+            .window()
+            .setRect(windowSize);
         this.windowSize = windowSize;
     }
 
@@ -68,7 +80,10 @@ afterEach(async function() {
         }
 
         try {
-            const res = await this.driver.manage().logs().get(webdriver.logging.Type.BROWSER);
+            const res = await this.driver
+                .manage()
+                .logs()
+                .get(webdriver.logging.Type.BROWSER);
             fs.writeFileSync(`screenshots/${testCaseName}.log`, JSON.stringify(res, null, 4));
         } catch (e) {
             console.error('error writing log');
@@ -76,11 +91,10 @@ afterEach(async function() {
 
         try {
             const res = await getPbhDebug(this.driver);
-            fs.writeFileSync(`screenshots/${testCaseName}.debug`, JSON.stringify(res, null, 4));
+            fs.writeFileSync(`screenshots/${testCaseName}.debug`, circJson(res));
         } catch (e) {
             console.error('error writing PBH debug log', e);
         }
-
     } else if (testCaseStatus === 'passed') {
         console.log(`Test: ${testCaseName}, Status: Passed!`);
     } else {
