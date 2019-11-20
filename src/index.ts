@@ -3,7 +3,8 @@ import * as webdriver from 'selenium-webdriver';
 import * as chrome from 'selenium-webdriver/chrome';
 
 import { MochaState } from './types';
-import { isDev, isSfo, initNetworkEntries, listRandom, getNetworkEntries } from './utils';
+import { isDev, isSfo, initNetworkEntries, listRandom, getNetworkEntries,
+        getPbhDebug } from './utils';
 import { WINDOW_SIZES } from './constants';
 
 before(async function() {
@@ -70,7 +71,14 @@ afterEach(async function() {
             const res = await this.driver.manage().logs().get(webdriver.logging.Type.BROWSER);
             fs.writeFileSync(`screenshots/${testCaseName}.log`, JSON.stringify(res, null, 4));
         } catch (e) {
-            console.error('error writing HAR');
+            console.error('error writing log');
+        }
+
+        try {
+            const res = await getPbhDebug(this.driver);
+            fs.writeFileSync(`screenshots/${testCaseName}.debug`, JSON.stringify(res, null, 4));
+        } catch (e) {
+            console.error('error writing PBH debug log', e);
         }
 
     } else if (testCaseStatus === 'passed') {

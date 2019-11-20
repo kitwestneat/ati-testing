@@ -68,6 +68,10 @@ export function pbh_config_get(driver: webdriver.ThenableWebDriver, key: string)
     return driver.executeScript((k: string) => (top as any).pbh_config_get(k), key);
 }
 
+export function getPbhDebug(driver: webdriver.ThenableWebDriver): Promise<any> {
+    return driver.executeScript(() => (top as any).PbhAdUnit.debug_buffer);
+}
+
 export function listRandom<T>(list: T[]): T | undefined {
     if (list.length === 0) {
         return;
