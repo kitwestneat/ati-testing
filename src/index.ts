@@ -10,7 +10,7 @@ import {
     listRandom,
     getNetworkEntries,
     getPbhDebug,
-    circJson,
+    setCircJson,
 } from './utils';
 import { WINDOW_SIZES } from './constants';
 
@@ -57,6 +57,10 @@ before(async function() {
     await initNetworkEntries(this.driver);
 });
 
+beforeEach(async function() {
+    await setCircJson(this.driver);
+});
+
 afterEach(async function() {
     if (!this.currentTest) {
         return;
@@ -91,7 +95,7 @@ afterEach(async function() {
 
         try {
             const res = await getPbhDebug(this.driver);
-            fs.writeFileSync(`screenshots/${testCaseName}.debug`, circJson(res));
+            fs.writeFileSync(`screenshots/${testCaseName}.debug`, res);
         } catch (e) {
             console.error('error writing PBH debug log', e);
         }

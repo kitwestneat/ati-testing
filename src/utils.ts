@@ -69,7 +69,31 @@ export function pbh_config_get(driver: webdriver.ThenableWebDriver, key: string)
 }
 
 export function getPbhDebug(driver: webdriver.ThenableWebDriver): Promise<any> {
-    return driver.executeScript(() => (top as any).PbhAdUnit.debug_buffer);
+    return driver.executeScript(() => (top as any).circJson((top as any).PbhAdUnit.debug_buffer));
+}
+
+export function setCircJson(driver: webdriver.ThenableWebDriver): Promise<void> {
+    return driver.executeScript(() =>
+        (top as any).circJson = (obj: any): string => {
+            const cache: any[] = [];
+            const objJson = JSON.stringify(
+                obj,
+                (_k: any, value: any) => {
+                    console.log(_k, value);
+                    if (typeof value === 'object' && value !== null) {
+                        if (cache.includes(value)) {
+                            return;
+                        }
+                        cache.push(value);
+                    }
+
+                    return value;
+                },
+                4
+            );
+
+            return objJson;
+        });
 }
 
 export function listRandom<T>(list: T[]): T | undefined {
@@ -95,22 +119,3 @@ export function clickElement(
     }, element);
 }
 
-export function circJson(obj: any): string {
-    const cache: any[] = [];
-    const objJson = JSON.stringify(
-        obj,
-        (_k: any, value: any) => {
-            if (typeof value === 'object' && value !== null) {
-                if (cache.includes(value)) {
-                    return;
-                }
-                cache.push(value);
-            }
-
-            return value;
-        },
-        4
-    );
-
-    return objJson;
-}
