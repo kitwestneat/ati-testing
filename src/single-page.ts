@@ -57,7 +57,7 @@ describe('single page tests', function() {
         }
         const loadedInline = await driver.wait(
             webdriver.until.elementLocated(webdriver.By.css('div.pbh-lazy-inline.pbh_inline')),
-            60000
+            120000
         );
         assert(loadedInline, 'lazy loaded an inline unit');
 
