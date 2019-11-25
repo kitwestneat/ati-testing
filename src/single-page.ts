@@ -39,9 +39,9 @@ describe('single page tests', function() {
         if (this.windowSize && isMobile(this.windowSize.width) && !mobile_skybox_enabled) {
             assert(skybox_bid.length == 0, 'skybox supressed on mobile');
         } else {
-            assert(skybox_bid.length == 1, 'found skybox amazon bid requests');
+            assert(skybox_bid.length > 0, 'found skybox amazon bid requests');
         }
-        assert(adhesion_bid.length == 1, 'found adhesion amazon bid requests');
+        assert(adhesion_bid.length > 0, 'found adhesion amazon bid requests');
     });
     it('inlines are lazy loaded', async function() {
         const driver = this.driver as webdriver.ThenableWebDriver;
