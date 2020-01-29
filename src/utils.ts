@@ -73,27 +73,28 @@ export function getPbhDebug(driver: webdriver.ThenableWebDriver): Promise<any> {
 }
 
 export function setCircJson(driver: webdriver.ThenableWebDriver): Promise<void> {
-    return driver.executeScript(() =>
-        (top as any).circJson = (obj: any): string => {
-            const cache: any[] = [];
-            const objJson = JSON.stringify(
-                obj,
-                (_k: any, value: any) => {
-                    console.log(_k, value);
-                    if (typeof value === 'object' && value !== null) {
-                        if (cache.includes(value)) {
-                            return;
+    return driver.executeScript(
+        () =>
+            ((top as any).circJson = (obj: any): string => {
+                const cache: any[] = [];
+                const objJson = JSON.stringify(
+                    obj,
+                    (_k: any, value: any) => {
+                        if (typeof value === 'object' && value !== null) {
+                            if (cache.includes(value)) {
+                                return;
+                            }
+                            cache.push(value);
                         }
-                        cache.push(value);
-                    }
 
-                    return value;
-                },
-                4
-            );
+                        return value;
+                    },
+                    4
+                );
 
-            return objJson;
-        });
+                return objJson;
+            })
+    );
 }
 
 export function listRandom<T>(list: T[]): T | undefined {
@@ -119,3 +120,31 @@ export function clickElement(
     }, element);
 }
 
+export function waitForDebugLog(
+    driver: webdriver.ThenableWebDriver,
+    logCb: (log: string[]) => boolean,
+    timeout = 6000
+): Promise<boolean> {
+    return driver.wait(async () => {
+        const logs = JSON.parse(await getPbhDebug(driver));
+
+        if (!logs || !logs.findIndex) {
+            console.log('no debug logs found', logs);
+
+            return false;
+        }
+
+        return logs.findIndex(logCb) != -1;
+    }, timeout);
+}
+
+export function waitForAdInit(
+    driver: webdriver.ThenableWebDriver,
+    timeout?: number
+): Promise<boolean> {
+    return waitForDebugLog(
+        driver,
+        (log) => typeof log[0] == 'string' && log[0] == 'PbhAdUnit.init',
+        timeout
+    );
+}

@@ -9,7 +9,7 @@ import {
     MREC_UNIT_NAME,
     ANALYTICS_URL,
 } from './constants';
-import { sleep, getNetworkEntries, scrollToBottom } from './utils';
+import { sleep, getNetworkEntries, scrollToBottom, waitForAdInit, waitForDebugLog } from './utils';
 
 describe('frontpage tests', function() {
     this.timeout(60000);
@@ -25,7 +25,17 @@ describe('frontpage tests', function() {
         );
         assert(logo.length > 0, 'logo exists');
     });
+    it('PbhAdUnit.init called', async function() {
+        const driver: webdriver.ThenableWebDriver = this.driver;
+        await waitForAdInit(driver);
+    });
     it('frontpage check Amazon bids for Adhesion & Skybox', async function() {
+        await waitForDebugLog(
+            this.driver,
+            (log) => log[0] == 'running provider' && log[1] == 'amazon_aps'
+        );
+        await sleep(1000);
+
         const entries = await getNetworkEntries(this.driver);
 
         const skybox_bid = entries.filter(

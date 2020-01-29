@@ -8,7 +8,7 @@ import {
     SKYBOX_UNIT_NAME,
     ANALYTICS_URL,
 } from './constants';
-import { sleep, getNetworkEntries, scrollDown, pbh_config_get, isMobile } from './utils';
+import { sleep, getNetworkEntries, scrollDown, pbh_config_get, isMobile, waitForAdInit, waitForDebugLog } from './utils';
 
 describe('single page tests', function() {
     before(async function() {
@@ -23,8 +23,16 @@ describe('single page tests', function() {
         );
         assert(footer, 'footer exists');
     });
+    it('PbhAdUnit.init called', async function() {
+        const driver: webdriver.ThenableWebDriver = this.driver;
+        await waitForAdInit(driver);
+    });
     it('check Amazon bids for Adhesion & Skybox', async function() {
-        await sleep(4000);
+        await waitForDebugLog(
+            this.driver,
+            (log) => log[0] == 'running provider' && log[1] == 'amazon_aps'
+        );
+        await sleep(1000);
 
         const entries = await getNetworkEntries(this.driver);
         const skybox_bid = entries.filter(
