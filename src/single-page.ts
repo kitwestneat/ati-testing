@@ -4,11 +4,20 @@ import {
     SINGLE_POST,
     AMZN_URL,
     INLINE_UNIT_NAME,
-    ADHESION_UNIT_NAME,
-    SKYBOX_UNIT_NAME,
     ANALYTICS_URL,
+    AOL_URL,
+    AOL_SKYBOX_PLACEMENTS,
+    AOL_ADHESION_PLACEMENTS,
 } from './constants';
-import { sleep, getNetworkEntries, scrollDown, pbh_config_get, isMobile, waitForAdInit, waitForDebugLog } from './utils';
+import {
+    sleep,
+    getNetworkEntries,
+    scrollDown,
+    pbh_config_get,
+    isMobile,
+    waitForAdInit,
+    waitForDebugLog,
+} from './utils';
 
 describe('single page tests', function() {
     before(async function() {
@@ -37,11 +46,13 @@ describe('single page tests', function() {
         const entries = await getNetworkEntries(this.driver);
         const skybox_bid = entries.filter(
             ({ name }: { name: string }) =>
-                name.startsWith(AMZN_URL) && name.includes(SKYBOX_UNIT_NAME)
+                name.startsWith(AOL_URL) &&
+                AOL_SKYBOX_PLACEMENTS.find((placement) => name.includes('' + placement))
         );
         const adhesion_bid = entries.filter(
             ({ name }: { name: string }) =>
-                name.startsWith(AMZN_URL) && name.includes(ADHESION_UNIT_NAME)
+                name.startsWith(AOL_URL) &&
+                AOL_ADHESION_PLACEMENTS.find((placement) => name.includes('' + placement))
         );
         const mobile_skybox_enabled = await pbh_config_get(this.driver, 'enable_mobile_skybox');
         if (this.windowSize && isMobile(this.windowSize.width) && !mobile_skybox_enabled) {

@@ -4,10 +4,11 @@ import {
     FRONTPAGE,
     LOGO_ALT_TEXT_HEADER,
     AMZN_URL,
-    SKYBOX_UNIT_NAME,
-    ADHESION_UNIT_NAME,
     MREC_UNIT_NAME,
     ANALYTICS_URL,
+    AOL_URL,
+    AOL_SKYBOX_PLACEMENTS,
+    AOL_ADHESION_PLACEMENTS,
 } from './constants';
 import { sleep, getNetworkEntries, scrollToBottom, waitForAdInit, waitForDebugLog } from './utils';
 
@@ -29,7 +30,7 @@ describe('frontpage tests', function() {
         const driver: webdriver.ThenableWebDriver = this.driver;
         await waitForAdInit(driver);
     });
-    it('frontpage check Amazon bids for Adhesion & Skybox', async function() {
+    it('frontpage check AOL bids for Adhesion & Skybox', async function() {
         await waitForDebugLog(
             this.driver,
             (log) => log[0] == 'running provider' && log[1] == 'amazon_aps'
@@ -38,15 +39,17 @@ describe('frontpage tests', function() {
 
         const entries = await getNetworkEntries(this.driver);
 
+        console.log('entries', JSON.stringify(entries, null, 4));
+
         const skybox_bid = entries.filter(
             ({ name }: { name: string }) =>
-                name.startsWith(AMZN_URL) &&
-                name.includes(SKYBOX_UNIT_NAME)
+                name.startsWith(AOL_URL) &&
+                AOL_SKYBOX_PLACEMENTS.find((placement) => name.includes('' + placement))
         );
         const adhesion_bid = entries.filter(
             ({ name }: { name: string }) =>
-                name.startsWith(AMZN_URL) &&
-                name.includes(ADHESION_UNIT_NAME)
+                name.startsWith(AOL_URL) &&
+                AOL_ADHESION_PLACEMENTS.find((placement) => name.includes('' + placement))
         );
         if (skybox_bid.length == 0) {
             console.log(entries);
@@ -79,9 +82,8 @@ describe('frontpage tests', function() {
     });
     it('test analytics loaded', async function() {
         const entries = await getNetworkEntries(this.driver);
-        const analytics_calls = entries.filter(
-            ({ name }: { name: string }) =>
-                name.startsWith(ANALYTICS_URL)
+        const analytics_calls = entries.filter(({ name }: { name: string }) =>
+            name.startsWith(ANALYTICS_URL)
         );
 
         assert(analytics_calls.length > 0, 'analytics are collected');

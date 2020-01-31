@@ -5,7 +5,8 @@ import {
     GALLERY_POST,
     GALLERY_FLOORBOARD_UNIT_NAME,
     AMZN_URL,
-    ADHESION_UNIT_NAME,
+    AOL_URL,
+    AOL_ADHESION_PLACEMENTS,
 } from './constants';
 
 const GALLERY_BUTTON_TEXT = 'View Gallery';
@@ -27,12 +28,13 @@ describe('Gallery post tests', function() {
         const galleryAdDiv = await driver.findElements(
             webdriver.By.css('.gallery-descriptions-wrap > .mrec-wrap > div')
         );
-        assert(!await galleryAdDiv[0].isDisplayed(), 'Ad div is not visible before click');
+        assert(!(await galleryAdDiv[0].isDisplayed()), 'Ad div is not visible before click');
     });
     it('no gal floor bids before open', async function() {
         const entries = await getNetworkEntries(this.driver);
-        const gallery_bids = entries.filter(({ name }: { name: string }) =>
-            name.startsWith(AMZN_URL) && name.includes(GALLERY_FLOORBOARD_UNIT_NAME)
+        const gallery_bids = entries.filter(
+            ({ name }: { name: string }) =>
+                name.startsWith(AMZN_URL) && name.includes(GALLERY_FLOORBOARD_UNIT_NAME)
         );
         assert(gallery_bids.length === 0, 'No gallery floorboard Amazon bids before opening');
     });
@@ -59,8 +61,9 @@ describe('Gallery post tests', function() {
 
         it('check gal floor bids', async function() {
             const post_entries = await getNetworkEntries(this.driver);
-            const post_gallery_bids = post_entries.filter(({ name }: { name: string }) =>
-                name.startsWith(AMZN_URL) && name.includes(GALLERY_FLOORBOARD_UNIT_NAME)
+            const post_gallery_bids = post_entries.filter(
+                ({ name }: { name: string }) =>
+                    name.startsWith(AMZN_URL) && name.includes(GALLERY_FLOORBOARD_UNIT_NAME)
             );
             assert(post_gallery_bids.length !== 0, 'Gallery floorboard Amazon bids after opening');
         });
@@ -69,11 +72,14 @@ describe('Gallery post tests', function() {
             const driver = this.driver as webdriver.ThenableWebDriver;
 
             const post_entries = await getNetworkEntries(driver);
-            const post_gallery_bids = post_entries.filter(({ name }: { name: string }) =>
-                name.startsWith(AMZN_URL) && name.includes(GALLERY_FLOORBOARD_UNIT_NAME)
+            const post_gallery_bids = post_entries.filter(
+                ({ name }: { name: string }) =>
+                    name.startsWith(AMZN_URL) && name.includes(GALLERY_FLOORBOARD_UNIT_NAME)
             );
-            const pre_adhesion_bids = post_entries.filter(({ name }: { name: string }) =>
-                name.startsWith(AMZN_URL) && name.includes(ADHESION_UNIT_NAME)
+            const pre_adhesion_bids = post_entries.filter(
+                ({ name }: { name: string }) =>
+                    name.startsWith(AOL_URL) &&
+                    AOL_ADHESION_PLACEMENTS.find((placement) => name.includes('' + placement))
             );
 
             const adhesion_refresh_clicks = await pbh_config_get(driver, 'adhesion_refresh_clicks');
@@ -90,21 +96,28 @@ describe('Gallery post tests', function() {
             const check_ad_refreshing = async (target: number): Promise<void> => {
                 const entries = await getNetworkEntries(driver);
                 if (adhesion_refresh_clicks === target) {
-                    const adhesion_bids = entries.filter(({ name }: { name: string }) =>
-                        name.startsWith(AMZN_URL) && name.includes(ADHESION_UNIT_NAME)
+                    const adhesion_bids = entries.filter(
+                        ({ name }: { name: string }) =>
+                            name.startsWith(AOL_URL) &&
+                            AOL_ADHESION_PLACEMENTS.find((placement) => name.includes('' + placement))
                     );
 
-                    assert(adhesion_bids.length === pre_adhesion_bids.length + 1,
-                        'More adhesion bids after clicking');
+                    assert(
+                        adhesion_bids.length === pre_adhesion_bids.length + 1,
+                        'More adhesion bids after clicking'
+                    );
                 }
 
                 if (refresh_clicks === target) {
-                    const gallery_bids = post_entries.filter(({ name }: { name: string }) =>
-                        name.startsWith(AMZN_URL) && name.includes(GALLERY_FLOORBOARD_UNIT_NAME)
+                    const gallery_bids = post_entries.filter(
+                        ({ name }: { name: string }) =>
+                            name.startsWith(AMZN_URL) && name.includes(GALLERY_FLOORBOARD_UNIT_NAME)
                     );
 
-                    assert(gallery_bids.length === post_gallery_bids.length + 1,
-                        'More adhesion bids after clicking');
+                    assert(
+                        gallery_bids.length === post_gallery_bids.length + 1,
+                        'More adhesion bids after clicking'
+                    );
                 }
             };
             await check_ad_refreshing(min_clicks);
