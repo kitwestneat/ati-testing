@@ -40,8 +40,6 @@ describe('frontpage tests', function() {
 
         const entries = await getNetworkEntries(this.driver);
 
-        console.log('entries', JSON.stringify(entries, null, 4));
-
         const skybox_bid = entries.filter(
             ({ name }: { name: string }) =>
                 name.startsWith(AOL_URL) &&
