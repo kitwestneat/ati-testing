@@ -148,3 +148,7 @@ export function waitForAdInit(
         timeout
     );
 }
+
+export function stringHasPlacement(haystack: string, placements: Array<string|number>): boolean {
+    return !!placements.find((placement) => haystack.includes('' + placement));
+}

@@ -9,8 +9,9 @@ import {
     AOL_URL,
     AOL_SKYBOX_PLACEMENTS,
     AOL_ADHESION_PLACEMENTS,
+    AOL_MREC_PLACEMENTS,
 } from './constants';
-import { sleep, getNetworkEntries, scrollToBottom, waitForAdInit, waitForDebugLog } from './utils';
+import { sleep, getNetworkEntries, scrollToBottom, waitForAdInit, waitForDebugLog, stringHasPlacement } from './utils';
 
 describe('frontpage tests', function() {
     this.timeout(60000);
@@ -33,7 +34,7 @@ describe('frontpage tests', function() {
     it('frontpage check AOL bids for Adhesion & Skybox', async function() {
         await waitForDebugLog(
             this.driver,
-            (log) => log[0] == 'running provider' && log[1] == 'amazon_aps'
+            (log) => log[0] == 'running provider' && log[1] == 'aol'
         );
         await sleep(1000);
 
@@ -44,12 +45,12 @@ describe('frontpage tests', function() {
         const skybox_bid = entries.filter(
             ({ name }: { name: string }) =>
                 name.startsWith(AOL_URL) &&
-                AOL_SKYBOX_PLACEMENTS.find((placement) => name.includes('' + placement))
+                stringHasPlacement(name, AOL_SKYBOX_PLACEMENTS)
         );
         const adhesion_bid = entries.filter(
             ({ name }: { name: string }) =>
                 name.startsWith(AOL_URL) &&
-                AOL_ADHESION_PLACEMENTS.find((placement) => name.includes('' + placement))
+                stringHasPlacement(name, AOL_ADHESION_PLACEMENTS)
         );
         if (skybox_bid.length == 0) {
             console.log(entries);
@@ -64,19 +65,17 @@ describe('frontpage tests', function() {
         }
     });
     it('mrecs are lazy loaded', async function() {
+        const mrec_filter = ({ name }: { name: string }): boolean =>
+            name.startsWith(AOL_URL) &&
+                stringHasPlacement(name, AOL_MREC_PLACEMENTS);
+
         const start_entries = await getNetworkEntries(this.driver);
-        const start_mrec_bids = start_entries.filter(
-            ({ name }: { name: string }) =>
-                name.startsWith(AMZN_URL) && name.includes(MREC_UNIT_NAME)
-        );
+        const start_mrec_bids = start_entries.filter(mrec_filter);
 
         await scrollToBottom(this.driver);
 
         const end_entries = await getNetworkEntries(this.driver);
-        const end_mrec_bids = end_entries.filter(
-            ({ name }: { name: string }) =>
-                name.startsWith(AMZN_URL) && name.includes(MREC_UNIT_NAME)
-        );
+        const end_mrec_bids = end_entries.filter(mrec_filter);
 
         assert(end_mrec_bids > start_mrec_bids, 'we lazy loaded some ads');
     });

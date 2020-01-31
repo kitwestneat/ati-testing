@@ -2,10 +2,10 @@ import * as webdriver from 'selenium-webdriver';
 import { assert } from 'chai';
 import {
     ERROR_404_PAGE,
-    AMZN_URL,
-    ADHESION_UNIT_NAME,
-    SKYBOX_UNIT_NAME,
     ANALYTICS_URL,
+    AOL_URL,
+    AOL_SKYBOX_PLACEMENTS,
+    AOL_ADHESION_PLACEMENTS,
 } from './constants';
 import {
     sleep,
@@ -14,6 +14,7 @@ import {
     isMobile,
     waitForAdInit,
     waitForDebugLog,
+    stringHasPlacement,
 } from './utils';
 
 describe('404 page tests', function() {
@@ -34,21 +35,23 @@ describe('404 page tests', function() {
         const driver: webdriver.ThenableWebDriver = this.driver;
         await waitForAdInit(driver);
     });
-    it('check Amazon bids for Adhesion & Skybox', async function() {
+    it('check AOL bids for Adhesion & Skybox', async function() {
         await waitForDebugLog(
             this.driver,
-            (log) => log[0] == 'running provider' && log[1] == 'amazon_aps'
+            (log) => log[0] == 'running provider' && log[1] == 'aol'
         );
         await sleep(1000);
 
         const entries = await getNetworkEntries(this.driver);
         const skybox_bid = entries.filter(
             ({ name }: { name: string }) =>
-                name.startsWith(AMZN_URL) && name.includes(SKYBOX_UNIT_NAME)
+                name.startsWith(AOL_URL) &&
+                stringHasPlacement(name, AOL_SKYBOX_PLACEMENTS)
         );
         const adhesion_bid = entries.filter(
             ({ name }: { name: string }) =>
-                name.startsWith(AMZN_URL) && name.includes(ADHESION_UNIT_NAME)
+                name.startsWith(AOL_URL) &&
+                stringHasPlacement(name, AOL_ADHESION_PLACEMENTS)
         );
         const mobile_skybox_enabled = await pbh_config_get(this.driver, 'enable_mobile_skybox');
         if (this.windowSize && isMobile(this.windowSize.width) && !mobile_skybox_enabled) {

@@ -36,10 +36,10 @@ describe('single page tests', function() {
         const driver: webdriver.ThenableWebDriver = this.driver;
         await waitForAdInit(driver);
     });
-    it('check Amazon bids for Adhesion & Skybox', async function() {
+    it('check AOL bids for Adhesion & Skybox', async function() {
         await waitForDebugLog(
             this.driver,
-            (log) => log[0] == 'running provider' && log[1] == 'amazon_aps'
+            (log) => log[0] == 'running provider' && log[1] == 'aol'
         );
         await sleep(1000);
 
@@ -58,9 +58,9 @@ describe('single page tests', function() {
         if (this.windowSize && isMobile(this.windowSize.width) && !mobile_skybox_enabled) {
             assert(skybox_bid.length == 0, 'skybox supressed on mobile');
         } else {
-            assert(skybox_bid.length > 0, 'found skybox amazon bid requests');
+            assert(skybox_bid.length > 0, 'found skybox aol bid requests');
         }
-        assert(adhesion_bid.length > 0, 'found adhesion amazon bid requests');
+        assert(adhesion_bid.length > 0, 'found adhesion aol bid requests');
     });
     it('inlines are lazy loaded', async function() {
         const driver = this.driver as webdriver.ThenableWebDriver;
@@ -88,7 +88,7 @@ describe('single page tests', function() {
                 name.startsWith(AMZN_URL) && name.includes(INLINE_UNIT_NAME)
         );
 
-        assert(end_inline_bids.length > start_inline_bids.length, 'Amazon bid on lazy loaded ads');
+        assert(end_inline_bids.length > start_inline_bids.length, 'AOL bid on lazy loaded ads');
     });
     it('test analytics loaded', async function() {
         const entries = await getNetworkEntries(this.driver);
