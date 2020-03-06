@@ -28,6 +28,7 @@ export const INLINE_UNIT_NAME = 'ATIInline';
 export const GALLERY_FLOORBOARD_UNIT_NAME = 'ATIGalleryFloorboard';
 
 
-export const AOL_SKYBOX_PLACEMENTS = [4009753, 3682988];
+// Skybox doesn't use 320x50 on mobile until refresh, so needs to include 300x250
+export const AOL_SKYBOX_PLACEMENTS = [4009753, 3682988, 3682984];
 export const AOL_ADHESION_PLACEMENTS = [3682983, 3682987];
 export const AOL_MREC_PLACEMENTS = [3682989];
