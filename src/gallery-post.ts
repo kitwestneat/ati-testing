@@ -57,11 +57,11 @@ describe('Gallery post tests', function() {
                 webdriver.By.css('.gallery-descriptions-wrap > .mrec-wrap > div')
             );
             const tripleliftAdDiv = await driver.findElements(
-                webdriver.By.css('.gallery-descriptions-wrap .3lift-workaround')
+                webdriver.By.css('.gallery-descriptions-wrap .iframebust-workaround')
             );
 
-            const isGamAdDisplayed = await galleryAdDiv[0].isDisplayed();
-            const is3liftAdDisplayed = await tripleliftAdDiv[0].isDisplayed();
+            const isGamAdDisplayed = galleryAdDiv && galleryAdDiv[0] && await galleryAdDiv[0].isDisplayed();
+            const is3liftAdDisplayed = tripleliftAdDiv && tripleliftAdDiv[0] && await tripleliftAdDiv[0].isDisplayed();
 
             const isDisplayed = isGamAdDisplayed || is3liftAdDisplayed;
 
