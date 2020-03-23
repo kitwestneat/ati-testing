@@ -60,10 +60,12 @@ describe('Gallery post tests', function() {
                 webdriver.By.css('.gallery-descriptions-wrap .3lift-workaround')
             );
 
-            const isDisplayed =
-                (await galleryAdDiv[0].isDisplayed()) || (await tripleliftAdDiv[0].isDisplayed());
+            const isGamAdDisplayed = await galleryAdDiv[0].isDisplayed();
+            const is3liftAdDisplayed = await tripleliftAdDiv[0].isDisplayed();
 
-            assert(isDisplayed, 'Ad div is visible after click');
+            const isDisplayed = isGamAdDisplayed || is3liftAdDisplayed;
+
+            assert(isDisplayed, 'Ad div is visible after click, gam ' + isGamAdDisplayed + ' 3lift ' + is3liftAdDisplayed);
         });
 
         it('check gal floor bids', async function() {
