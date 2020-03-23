@@ -28,7 +28,8 @@ before(async function() {
 
         options.addArguments(
             'host-resolver-rules=MAP allthatsinteresting.com 157.230.169.90,' +
-                ' MAP www.allthatsinteresting.com 157.230.169.90'
+                ' MAP www.allthatsinteresting.com 157.230.169.90',
+            'ignore-certificate-errors'
         );
     }
 
@@ -68,7 +69,7 @@ afterEach(async function() {
     if (!this.currentTest) {
         return;
     }
-    const testCaseName: string = this.currentTest.title + '-' + Date.now();
+    const testCaseName: string = this.currentTest.title.replace(' ', '_') + '-' + Date.now();
     const testCaseStatus: MochaState = this.currentTest.state;
     if (testCaseStatus === 'failed') {
         console.log(`Test: ${testCaseName}, Status: Failed!`);
@@ -81,7 +82,10 @@ afterEach(async function() {
 
         try {
             const entries = await getNetworkEntries(this.driver);
-            fs.writeFileSync(`${logLocation}/${testCaseName}.har`, JSON.stringify(entries, null, 4));
+            fs.writeFileSync(
+                `${logLocation}/${testCaseName}.har`,
+                JSON.stringify(entries, null, 4)
+            );
         } catch (e) {
             console.error('error writing HAR');
         }
