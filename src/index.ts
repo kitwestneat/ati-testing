@@ -10,9 +10,12 @@ import {
     listRandom,
     getNetworkEntries,
     getPbhDebug,
+    getDom,
     setCircJson,
 } from './utils';
 import { WINDOW_SIZES } from './constants';
+
+const logLocation = process.env['ATI_TEST_DIR'] || 'screenshots';
 
 before(async function() {
     // initializing chrome driver
@@ -71,14 +74,14 @@ afterEach(async function() {
         console.log(`Test: ${testCaseName}, Status: Failed!`);
         // capturing screenshot if test fails
         this.driver.takeScreenshot().then((data: any) => {
-            const screenshotPath = `screenshots/${testCaseName}.png`;
+            const screenshotPath = `${logLocation}/${testCaseName}.png`;
             console.log(`Saving Screenshot as: ${screenshotPath}`);
             fs.writeFileSync(screenshotPath, data, 'base64');
         });
 
         try {
             const entries = await getNetworkEntries(this.driver);
-            fs.writeFileSync(`screenshots/${testCaseName}.har`, JSON.stringify(entries, null, 4));
+            fs.writeFileSync(`${logLocation}/${testCaseName}.har`, JSON.stringify(entries, null, 4));
         } catch (e) {
             console.error('error writing HAR');
         }
@@ -88,14 +91,21 @@ afterEach(async function() {
                 .manage()
                 .logs()
                 .get(webdriver.logging.Type.BROWSER);
-            fs.writeFileSync(`screenshots/${testCaseName}.log`, JSON.stringify(res, null, 4));
+            fs.writeFileSync(`${logLocation}/${testCaseName}.log`, JSON.stringify(res, null, 4));
         } catch (e) {
             console.error('error writing log');
         }
 
         try {
             const res = await getPbhDebug(this.driver);
-            fs.writeFileSync(`screenshots/${testCaseName}.debug`, res);
+            fs.writeFileSync(`${logLocation}/${testCaseName}.debug`, res);
+        } catch (e) {
+            console.error('error writing PBH debug log', e);
+        }
+
+        try {
+            const res = await getDom(this.driver);
+            fs.writeFileSync(`${logLocation}/${testCaseName}.dom`, res);
         } catch (e) {
             console.error('error writing PBH debug log', e);
         }
