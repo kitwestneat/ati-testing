@@ -152,3 +152,9 @@ export function waitForAdInit(
 export function stringHasPlacement(haystack: string, placements: Array<string|number>): boolean {
     return !!placements.find((placement) => haystack.includes('' + placement));
 }
+
+export function getDom(
+    driver: webdriver.ThenableWebDriver
+): Promise<string> {
+    return driver.executeScript('return document.documentElement.outerHTML');
+}

@@ -56,7 +56,14 @@ describe('Gallery post tests', function() {
             const galleryAdDiv = await driver.findElements(
                 webdriver.By.css('.gallery-descriptions-wrap > .mrec-wrap > div')
             );
-            assert(await galleryAdDiv[0].isDisplayed(), 'Ad div is visible after click');
+            const tripleliftAdDiv = await driver.findElements(
+                webdriver.By.css('.gallery-descriptions-wrap .3lift-workaround')
+            );
+
+            const isDisplayed =
+                (await galleryAdDiv[0].isDisplayed()) || (await tripleliftAdDiv[0].isDisplayed());
+
+            assert(isDisplayed, 'Ad div is visible after click');
         });
 
         it('check gal floor bids', async function() {
@@ -99,7 +106,9 @@ describe('Gallery post tests', function() {
                     const adhesion_bids = entries.filter(
                         ({ name }: { name: string }) =>
                             name.startsWith(AOL_URL) &&
-                            AOL_ADHESION_PLACEMENTS.find((placement) => name.includes('' + placement))
+                            AOL_ADHESION_PLACEMENTS.find((placement) =>
+                                name.includes('' + placement)
+                            )
                     );
 
                     assert(
