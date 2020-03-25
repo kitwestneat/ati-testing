@@ -69,7 +69,7 @@ afterEach(async function() {
     if (!this.currentTest) {
         return;
     }
-    const testCaseName: string = this.currentTest.title.replace(' ', '_') + '-' + Date.now();
+    const testCaseName: string = this.currentTest.title.replace(/ /g, '_') + '-' + Date.now();
     const testCaseStatus: MochaState = this.currentTest.state;
     if (testCaseStatus === 'failed') {
         console.log(`Test: ${testCaseName}, Status: Failed!`);
