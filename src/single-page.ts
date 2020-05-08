@@ -55,7 +55,7 @@ describe('single page tests', function() {
                 AOL_ADHESION_PLACEMENTS.find((placement) => name.includes('' + placement))
         );
         const mobile_skybox_enabled = await pbh_config_get(this.driver, 'enable_mobile_skybox');
-	console.log('windowSize', this.windowSize, 'mobile_skybox_enabled', mobile_skybox_enabled);
+        console.log('windowSize', this.windowSize, 'mobile_skybox_enabled', mobile_skybox_enabled);
         if (this.windowSize && isMobile(this.windowSize.width) && !mobile_skybox_enabled) {
             assert(skybox_bid.length == 0, 'skybox supressed on mobile');
         } else {

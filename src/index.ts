@@ -15,7 +15,6 @@ import {
 } from './utils';
 import { WINDOW_SIZES } from './constants';
 import { send_email } from './mail';
-import { Attachment } from 'nodemailer/lib/mailer';
 
 const logLocation = process.env['ATI_TEST_DIR'] || 'screenshots';
 
@@ -42,20 +41,14 @@ before(async function() {
     const capa = webdriver.Capabilities.chrome();
     capa.set('pageLoadStrategy', 'eager');
 
-    this.driver = new webdriver.Builder()
-        .withCapabilities(capa)
-        .setChromeOptions(options)
-        .build();
+    this.driver = new webdriver.Builder().withCapabilities(capa).setChromeOptions(options).build();
 
     const windowSize = listRandom(WINDOW_SIZES);
     if (!windowSize) {
         console.error('could not select random window size');
     } else {
         console.log('testing size', windowSize);
-        this.driver
-            .manage()
-            .window()
-            .setRect(windowSize);
+        this.driver.manage().window().setRect(windowSize);
         this.windowSize = windowSize;
     }
 
@@ -74,47 +67,7 @@ afterEach(async function() {
     const testCaseName: string = this.currentTest.title.replace(/ /g, '_') + '-' + Date.now();
     const testCaseStatus: MochaState = this.currentTest.state;
     if (testCaseStatus === 'failed') {
-        console.log(`Test: ${testCaseName}, Status: Failed!`);
-        // capturing screenshot if test fails
-        this.driver.takeScreenshot().then((data: any) => {
-            const screenshotPath = `${logLocation}/${testCaseName}.png`;
-            console.log(`Saving Screenshot as: ${screenshotPath}`);
-            fs.writeFileSync(screenshotPath, data, 'base64');
-        });
-
-        try {
-            const entries = await getNetworkEntries(this.driver);
-            fs.writeFileSync(
-                `${logLocation}/${testCaseName}.har`,
-                JSON.stringify(entries, null, 4)
-            );
-        } catch (e) {
-            console.error('error writing HAR');
-        }
-
-        try {
-            const res = await this.driver
-                .manage()
-                .logs()
-                .get(webdriver.logging.Type.BROWSER);
-            fs.writeFileSync(`${logLocation}/${testCaseName}.log`, JSON.stringify(res, null, 4));
-        } catch (e) {
-            console.error('error writing log');
-        }
-
-        try {
-            const res = await getPbhDebug(this.driver);
-            fs.writeFileSync(`${logLocation}/${testCaseName}.debug`, res);
-        } catch (e) {
-            console.error('error writing PBH debug log', e);
-        }
-
-        try {
-            const res = await getDom(this.driver);
-            fs.writeFileSync(`${logLocation}/${testCaseName}.dom`, res);
-        } catch (e) {
-            console.error('error writing PBH debug log', e);
-        }
+        handleFailure({ testCaseName, driver: this.driver });
     } else if (testCaseStatus === 'passed') {
         console.log(`Test: ${testCaseName}, Status: Passed!`);
     } else {
@@ -130,7 +83,7 @@ interface HandleFailureOpts {
     testCaseName: string;
     driver: webdriver.ThenableWebDriver;
 }
-async function handleFailure({ testCaseName, driver }: HandleFailureOpts) {
+async function handleFailure({ testCaseName, driver }: HandleFailureOpts): Promise<void> {
     console.log(`Test: ${testCaseName}, Status: Failed!`);
     const filenames: string[] = [];
     const body = 'Please kindly find error logs attached.\n';
@@ -146,20 +99,14 @@ async function handleFailure({ testCaseName, driver }: HandleFailureOpts) {
     try {
         const entries = await getNetworkEntries(driver);
         const filename = `${logLocation}/${testCaseName}.har`;
-        fs.writeFileSync(
-            filename,
-            JSON.stringify(entries, null, 4)
-        );
+        fs.writeFileSync(filename, JSON.stringify(entries, null, 4));
         filenames.push(filename);
     } catch (e) {
         console.error('error writing HAR');
     }
 
     try {
-        const res = await driver
-            .manage()
-            .logs()
-            .get(webdriver.logging.Type.BROWSER);
+        const res = await driver.manage().logs().get(webdriver.logging.Type.BROWSER);
         const filename = `${logLocation}/${testCaseName}.log`;
         fs.writeFileSync(filename, JSON.stringify(res, null, 4));
         filenames.push(filename);
@@ -188,7 +135,7 @@ async function handleFailure({ testCaseName, driver }: HandleFailureOpts) {
     send_email({
         subject: 'ATI Test Error Files',
         body,
-        attachments,
+        attachments: filenames.map((path) => ({ path })),
     });
 }
 // vi: ts=4 sw=4 et
