@@ -14,6 +14,8 @@ import {
     setCircJson,
 } from './utils';
 import { WINDOW_SIZES } from './constants';
+import { send_email } from './mail';
+import { Attachment } from 'nodemailer/lib/mailer';
 
 const logLocation = process.env['ATI_TEST_DIR'] || 'screenshots';
 
@@ -124,4 +126,69 @@ after(function() {
     this.driver.quit();
 });
 
+interface HandleFailureOpts {
+    testCaseName: string;
+    driver: webdriver.ThenableWebDriver;
+}
+async function handleFailure({ testCaseName, driver }: HandleFailureOpts) {
+    console.log(`Test: ${testCaseName}, Status: Failed!`);
+    const filenames: string[] = [];
+    const body = 'Please kindly find error logs attached.\n';
+
+    // capturing screenshot if test fails
+    driver.takeScreenshot().then((data: any) => {
+        const screenshotPath = `${testCaseName}.png`;
+        console.log(`Saving Screenshot as: ${screenshotPath}`);
+        fs.writeFileSync(screenshotPath, data, 'base64');
+        filenames.push(screenshotPath);
+    });
+
+    try {
+        const entries = await getNetworkEntries(driver);
+        const filename = `${logLocation}/${testCaseName}.har`;
+        fs.writeFileSync(
+            filename,
+            JSON.stringify(entries, null, 4)
+        );
+        filenames.push(filename);
+    } catch (e) {
+        console.error('error writing HAR');
+    }
+
+    try {
+        const res = await driver
+            .manage()
+            .logs()
+            .get(webdriver.logging.Type.BROWSER);
+        const filename = `${logLocation}/${testCaseName}.log`;
+        fs.writeFileSync(filename, JSON.stringify(res, null, 4));
+        filenames.push(filename);
+    } catch (e) {
+        console.error('error writing log');
+    }
+
+    try {
+        const res = await getPbhDebug(driver);
+        const filename = `${logLocation}/${testCaseName}.debug`;
+        fs.writeFileSync(filename, res);
+        filenames.push(filename);
+    } catch (e) {
+        console.error('error writing PBH debug log', e);
+    }
+
+    try {
+        const res = await getDom(driver);
+        const filename = `${logLocation}/${testCaseName}.dom`;
+        fs.writeFileSync(filename, res);
+        filenames.push(filename);
+    } catch (e) {
+        console.error('error writing DOM', e);
+    }
+
+    send_email({
+        subject: 'ATI Test Error Files',
+        body,
+        attachments,
+    });
+}
 // vi: ts=4 sw=4 et
