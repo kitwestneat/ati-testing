@@ -90,7 +90,7 @@ async function handleFailure({ testCaseName, driver }: HandleFailureOpts): Promi
 
     // capturing screenshot if test fails
     driver.takeScreenshot().then((data: any) => {
-        const screenshotPath = `${testCaseName}.png`;
+        const screenshotPath = `${logLocation}/${testCaseName}.png`;
         console.log(`Saving Screenshot as: ${screenshotPath}`);
         fs.writeFileSync(screenshotPath, data, 'base64');
         filenames.push(screenshotPath);

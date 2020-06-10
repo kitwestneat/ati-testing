@@ -9,22 +9,19 @@ print_error() {
 }
 
 had_error() {
-	ATTACH=""
-	for f in $TMP_DIR/*; do
-		ATTACH="$ATTACH -a $f"
-	done
-
-	print_error | mail -s "ATI Tests Failed $(date)" $ATTACH
+	print_error
 	exit
 }
 
 TMP_DIR=$(mktemp -d)
+export ATI_TEST_DIR=$TMP_DIR
 
 cd /home/khw/ati-testing
-find /home/khw/ati-testing/screenshots/ -mtime +7 -type f -delete
+mkdir -p /home/khw/ati-testing/screenshots/
+find /home/khw/ati-testing/screenshots/ -mtime +7 -delete
 
-yarn test $TMP_DIR >& /tmp/ati-testing.log || had_error
-yarn sfo-test $TMP_DIR >& /tmp/ati-testing.log || had_error
+yarn test >& /tmp/ati-testing.log || had_error
+yarn sfo-test >& /tmp/ati-testing.log || had_error
 
 grep failing /tmp/ati-testing.log
 
