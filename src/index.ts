@@ -138,7 +138,7 @@ async function handleFailure({ testCaseName, driver }: HandleFailureOpts): Promi
             body,
             attachments: filenames.map((path) => ({ path })),
         });
-    } catch(e) {
+    } catch (e) {
         console.error('error sending mail', e);
     }
 }

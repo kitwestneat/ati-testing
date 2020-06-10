@@ -11,6 +11,7 @@ export const SITE_BASE = isDev() ?
     'https://allthatsinteresting.com';
 export const FRONTPAGE = SITE_BASE;
 export const SINGLE_POST = SITE_BASE + '/emma-lazarus';
+export const SECOND_PAGE = SITE_BASE + '/women-in-world-war-2/2';
 export const GALLERY_POST = SITE_BASE + '/toraja-death-ritual';
 export const ERROR_404_PAGE = SITE_BASE + '/this-page-should-404';
 
