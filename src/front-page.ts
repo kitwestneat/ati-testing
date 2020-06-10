@@ -50,9 +50,6 @@ describe('frontpage tests', function() {
                 name.startsWith(AOL_URL) &&
                 stringHasPlacement(name, AOL_ADHESION_PLACEMENTS)
         );
-        if (skybox_bid.length == 0) {
-            console.log(entries);
-        }
         assert(skybox_bid.length >= 1, 'found skybox amazon bid requests');
         assert(adhesion_bid.length >= 1, 'found adhesion amazon bid requests');
         if (skybox_bid.length > 1) {

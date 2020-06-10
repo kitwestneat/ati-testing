@@ -132,10 +132,14 @@ async function handleFailure({ testCaseName, driver }: HandleFailureOpts): Promi
         console.error('error writing DOM', e);
     }
 
-    send_email({
-        subject: 'ATI Test Error Files',
-        body,
-        attachments: filenames.map((path) => ({ path })),
-    });
+    try {
+        send_email({
+            subject: 'ATI Test Error Files',
+            body,
+            attachments: filenames.map((path) => ({ path })),
+        });
+    } catch(e) {
+        console.error('error sending mail', e);
+    }
 }
 // vi: ts=4 sw=4 et

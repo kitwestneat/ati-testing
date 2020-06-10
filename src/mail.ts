@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import { Attachment } from 'nodemailer/lib/mailer';
 
-const EMAIL_TO = process.env.EMAIL_TO || 'kit,alec';
+const EMAIL_TO = process.env.EMAIL_TO || 'admin@pbh-network.com';
 
 type SendEmailOpts = Partial<{
     subject: string;
@@ -20,14 +20,19 @@ export async function send_email({
         return;
     }
 
-    console.log('sending mail to', to, 'subject', subject);
-
-    const transporter = nodemailer.createTransport({ sendmail: true });
-    await transporter.sendMail({
-        from: 'admin',
+    const data:any = {
+        from: 'admin@pbh-network.com',
         to,
         subject,
         text: body,
-        attachments,
-    });
+    };
+
+    if (attachments && attachments.length > 0) {
+        data.attachments = attachments;
+    }
+
+    console.log('sending mail to', to, 'subject', subject);
+
+    const transporter = nodemailer.createTransport({ sendmail: true, path: '/usr/sbin/sendmail' });
+    await transporter.sendMail(data);
 }
