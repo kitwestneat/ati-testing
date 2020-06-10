@@ -20,7 +20,7 @@ export async function send_email({
         return;
     }
 
-    const data:any = {
+    const data: any = {
         from: 'admin@pbh-network.com',
         to,
         subject,

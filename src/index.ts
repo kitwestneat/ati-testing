@@ -133,11 +133,13 @@ async function handleFailure({ testCaseName, driver }: HandleFailureOpts): Promi
     }
 
     try {
-        send_email({
-            subject: 'ATI Test Error Files',
-            body,
-            attachments: filenames.map((path) => ({ path })),
-        });
+        if (!isDev()) {
+            send_email({
+                subject: 'ATI Test Error Files',
+                body,
+                attachments: filenames.map((path) => ({ path })),
+            });
+        }
     } catch (e) {
         console.error('error sending mail', e);
     }

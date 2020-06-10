@@ -52,6 +52,13 @@ export async function scrollDown(driver: webdriver.ThenableWebDriver): Promise<a
     await driver.executeScript(clientScroll, 1000);
 }
 
+export async function scrollToElement(
+    driver: webdriver.ThenableWebDriver,
+    element: webdriver.WebElement
+): Promise<void> {
+    await driver.executeScript('arguments[0].scrollIntoView(true);', element);
+}
+
 export async function scrollToBottom(driver: webdriver.ThenableWebDriver): Promise<any> {
     // do scroll to bottom multiple times because lazy load changes bottom
     await driver.executeScript(clientScroll);
@@ -149,12 +156,10 @@ export function waitForAdInit(
     );
 }
 
-export function stringHasPlacement(haystack: string, placements: Array<string|number>): boolean {
+export function stringHasPlacement(haystack: string, placements: Array<string | number>): boolean {
     return !!placements.find((placement) => haystack.includes('' + placement));
 }
 
-export function getDom(
-    driver: webdriver.ThenableWebDriver
-): Promise<string> {
+export function getDom(driver: webdriver.ThenableWebDriver): Promise<string> {
     return driver.executeScript('return document.documentElement.outerHTML');
 }
