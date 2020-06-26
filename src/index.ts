@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as webdriver from 'selenium-webdriver';
 import * as chrome from 'selenium-webdriver/chrome';
+import { assert } from 'chai';
 
 import { MochaState } from './types';
 import {
@@ -75,7 +76,11 @@ afterEach(async function() {
     }
 });
 
-after(function() {
+after(async function() {
+    const res = await this.driver.manage().logs().get(webdriver.logging.Type.BROWSER);
+
+    assert.notDeepInclude(res, 'timeout waiting for ad', 'Ad render timeout detected');
+
     this.driver.quit();
 });
 
