@@ -98,7 +98,7 @@ async function handleFailure({ testCaseName, driver }: HandleFailureOpts): Promi
 
     try {
         const entries = await getNetworkEntries(driver);
-        const filename = `${logLocation}/${testCaseName}.har`;
+        const filename = `${logLocation}/${testCaseName}.har.log`;
         fs.writeFileSync(filename, JSON.stringify(entries, null, 4));
         filenames.push(filename);
     } catch (e) {
@@ -107,7 +107,7 @@ async function handleFailure({ testCaseName, driver }: HandleFailureOpts): Promi
 
     try {
         const res = await driver.manage().logs().get(webdriver.logging.Type.BROWSER);
-        const filename = `${logLocation}/${testCaseName}.log`;
+        const filename = `${logLocation}/${testCaseName}.console.log`;
         fs.writeFileSync(filename, JSON.stringify(res, null, 4));
         filenames.push(filename);
     } catch (e) {
@@ -116,7 +116,7 @@ async function handleFailure({ testCaseName, driver }: HandleFailureOpts): Promi
 
     try {
         const res = await getPbhDebug(driver);
-        const filename = `${logLocation}/${testCaseName}.debug`;
+        const filename = `${logLocation}/${testCaseName}.debug.log`;
         fs.writeFileSync(filename, res);
         filenames.push(filename);
     } catch (e) {
@@ -125,7 +125,7 @@ async function handleFailure({ testCaseName, driver }: HandleFailureOpts): Promi
 
     try {
         const res = await getDom(driver);
-        const filename = `${logLocation}/${testCaseName}.dom`;
+        const filename = `${logLocation}/${testCaseName}.dom.log`;
         fs.writeFileSync(filename, res);
         filenames.push(filename);
     } catch (e) {
