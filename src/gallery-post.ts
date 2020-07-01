@@ -20,7 +20,7 @@ describe('Gallery post tests', function() {
         console.log('getting', GALLERY_POST);
         await this.driver.get(GALLERY_POST);
         console.log('got post!');
-        await sleep(4000);
+        await sleep(5000);
     });
 
     it('ad div not visible before open', async function() {
@@ -46,7 +46,7 @@ describe('Gallery post tests', function() {
             }
         }
 
-        assert(found_amzn_bid, 'No gallery floorboard Amazon bids before opening');
+        assert(!found_amzn_bid, 'No gallery floorboard Amazon bids before opening');
     });
 
     describe('open gallery', function() {
@@ -80,11 +80,20 @@ describe('Gallery post tests', function() {
 
         it('check gal floor bids', async function() {
             const post_entries = await getNetworkEntries(this.driver);
-            const post_gallery_bids = post_entries.filter(
-                ({ name }: { name: string }) =>
-                    name.startsWith(AMZN_URL) && name.includes(GALLERY_FLOORBOARD_UNIT_NAME)
-            );
-            assert(post_gallery_bids.length !== 0, 'Gallery floorboard Amazon bids after opening');
+            let found_amzn_bid = false;
+            for (const entry of post_entries) {
+                const { name, transferSize } = entry;
+
+                if (name.startsWith(AMZN_URL) && name.includes(GALLERY_FLOORBOARD_UNIT_NAME)) {
+                    found_amzn_bid = true;
+                    break;
+                }
+                if (name == 'https://c.amazon-adsystem.com/aax2/apstag.js' && transferSize == 0) {
+                    this.skip();
+                    return;
+                }
+            }
+            assert(found_amzn_bid, 'Gallery floorboard Amazon bids after opening');
         });
 
         it('click next and see if adhesion and gal floor refresh', async function() {
