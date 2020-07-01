@@ -42,6 +42,7 @@ describe('Gallery post tests', function() {
             }
             if (name == 'https://c.amazon-adsystem.com/aax2/apstag.js' && transferSize == 0) {
                 this.skip();
+
                 return;
             }
         }
@@ -70,12 +71,20 @@ describe('Gallery post tests', function() {
                 webdriver.By.css('.gallery-descriptions-wrap .iframebust-workaround')
             );
 
-            const isGamAdDisplayed = galleryAdDiv && galleryAdDiv[0] && await galleryAdDiv[0].isDisplayed();
-            const is3liftAdDisplayed = tripleliftAdDiv && tripleliftAdDiv[0] && await tripleliftAdDiv[0].isDisplayed();
+            const isGamAdDisplayed =
+                galleryAdDiv && galleryAdDiv[0] && (await galleryAdDiv[0].isDisplayed());
+            const is3liftAdDisplayed =
+                tripleliftAdDiv && tripleliftAdDiv[0] && (await tripleliftAdDiv[0].isDisplayed());
 
             const isDisplayed = isGamAdDisplayed || is3liftAdDisplayed;
 
-            assert(isDisplayed, 'Ad div is visible after click, gam ' + isGamAdDisplayed + ' 3lift ' + is3liftAdDisplayed);
+            assert(
+                isDisplayed,
+                'Ad div is visible after click, gam ' +
+                    isGamAdDisplayed +
+                    ' 3lift ' +
+                    is3liftAdDisplayed
+            );
         });
 
         it('check gal floor bids', async function() {
@@ -90,6 +99,7 @@ describe('Gallery post tests', function() {
                 }
                 if (name == 'https://c.amazon-adsystem.com/aax2/apstag.js' && transferSize == 0) {
                     this.skip();
+
                     return;
                 }
             }
@@ -100,6 +110,11 @@ describe('Gallery post tests', function() {
             const driver = this.driver as webdriver.ThenableWebDriver;
 
             const post_entries = await getNetworkEntries(driver);
+            const should_check_amazon =
+                post_entries.findIndex(
+                    ({ name, transferSize }: { name: string; transferSize: number}) =>
+                        name == 'https://c.amazon-adsystem.com/aax2/apstag.js' && transferSize != 0
+                ) != -1;
             const post_gallery_bids = post_entries.filter(
                 ({ name }: { name: string }) =>
                     name.startsWith(AMZN_URL) && name.includes(GALLERY_FLOORBOARD_UNIT_NAME)
@@ -138,7 +153,7 @@ describe('Gallery post tests', function() {
                     );
                 }
 
-                if (refresh_clicks === target) {
+                if (refresh_clicks === target && should_check_amazon) {
                     const gallery_bids = post_entries.filter(
                         ({ name }: { name: string }) =>
                             name.startsWith(AMZN_URL) && name.includes(GALLERY_FLOORBOARD_UNIT_NAME)
