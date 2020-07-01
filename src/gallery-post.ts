@@ -32,11 +32,21 @@ describe('Gallery post tests', function() {
     });
     it('no gal floor bids before open', async function() {
         const entries = await getNetworkEntries(this.driver);
-        const gallery_bids = entries.filter(
-            ({ name }: { name: string }) =>
-                name.startsWith(AMZN_URL) && name.includes(GALLERY_FLOORBOARD_UNIT_NAME)
-        );
-        assert(gallery_bids.length === 0, 'No gallery floorboard Amazon bids before opening');
+        let found_amzn_bid = false;
+        for (const entry of entries) {
+            const { name, transferSize } = entry;
+
+            if (name.startsWith(AMZN_URL) && name.includes(GALLERY_FLOORBOARD_UNIT_NAME)) {
+                found_amzn_bid = true;
+                break;
+            }
+            if (name == 'https://c.amazon-adsystem.com/aax2/apstag.js' && transferSize == 0) {
+                this.skip();
+                return;
+            }
+        }
+
+        assert(found_amzn_bid, 'No gallery floorboard Amazon bids before opening');
     });
 
     describe('open gallery', function() {
