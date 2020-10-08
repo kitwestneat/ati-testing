@@ -77,9 +77,11 @@ afterEach(async function() {
 });
 
 after(async function() {
+    /*
     const res = await this.driver.manage().logs().get(webdriver.logging.Type.BROWSER);
 
     assert.notDeepInclude(res, 'timeout waiting for ad', 'Ad render timeout detected');
+   */
 
     this.driver.quit();
 });
@@ -140,7 +142,7 @@ async function handleFailure({ testCaseName, driver }: HandleFailureOpts): Promi
     try {
         if (!isDev()) {
             send_email({
-                subject: 'ATI Test Error Files',
+                subject: 'ATI Test Error Files - ' + testCaseName,
                 body,
                 attachments: filenames.map((path) => ({ path })),
             });
