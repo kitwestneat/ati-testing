@@ -2,7 +2,7 @@ import * as webdriver from 'selenium-webdriver';
 import { assert } from 'chai';
 import { sleep, getNetworkEntries, isMobile, pbh_config_get, clickElement } from './utils';
 import {
-    GALLERY_POST,
+    getGalleryPostUrl,
     GALLERY_FLOORBOARD_UNIT_NAME,
     AMZN_URL,
     AOL_URL,
@@ -17,8 +17,9 @@ describe('Gallery post tests', function() {
             this.skip();
         }
 
-        console.log('getting', GALLERY_POST);
-        await this.driver.get(GALLERY_POST);
+        const gallery_post = getGalleryPostUrl();
+        console.log('getting', gallery_post);
+        await this.driver.get(gallery_post);
         console.log('got post!');
         await sleep(5000);
     });

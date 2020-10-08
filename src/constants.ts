@@ -12,7 +12,6 @@ export const SITE_BASE = isDev() ?
 export const FRONTPAGE = SITE_BASE;
 export const SINGLE_POST = SITE_BASE + '/emma-lazarus';
 export const SECOND_PAGE = SITE_BASE + '/women-in-world-war-2/2';
-export const GALLERY_POST = SITE_BASE + '/toraja-death-ritual';
 export const ERROR_404_PAGE = SITE_BASE + '/this-page-should-404';
 
 export const LOGO_ALT_TEXT_HEADER = 'All That\'s Interesting';
@@ -28,8 +27,24 @@ export const MREC_UNIT_NAME = 'AllThatsInterestingRectangle';
 export const INLINE_UNIT_NAME = 'ATIInline';
 export const GALLERY_FLOORBOARD_UNIT_NAME = 'ATIGalleryFloorboard';
 
-
 // Skybox doesn't use 320x50 on mobile until refresh, so needs to include 300x250
 export const AOL_SKYBOX_PLACEMENTS = ['ati_skybox'];
 export const AOL_ADHESION_PLACEMENTS = ['ati_adhesion'];
 export const AOL_MREC_PLACEMENTS = ['ati_mrec'];
+
+const GALLERY_POSTS = [
+    'maps-that-explain-america',
+    'colorized-photos',
+    'bajau-people',
+    'jacob-riis-photographs-how-the-other-half-lives',
+    'ed-gein-house',
+    'toraja-death-ritual',
+];
+
+const sample = <T>(items: T[]): T => items[Math.floor(Math.random() * items.length)];
+
+export function getGalleryPostUrl(): string {
+    const slug = sample(GALLERY_POSTS);
+
+    return SITE_BASE + '/' + slug;
+}
