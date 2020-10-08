@@ -1,13 +1,14 @@
 import * as webdriver from 'selenium-webdriver';
 import { assert } from 'chai';
-import { SECOND_PAGE, ANALYTICS_URL } from './constants';
+import { getPaginatedPostUrl, ANALYTICS_URL } from './constants';
 import { getNetworkEntries, waitForAdInit } from './utils';
 import { test_inlines, test_skybox_and_adhesion } from './single-page-lib';
 
 describe('page two tests', function() {
     before(async function() {
-        console.log('getting', SECOND_PAGE);
-        await this.driver.get(SECOND_PAGE);
+        const second_page = getPaginatedPostUrl() + '/2';
+        console.log('getting', second_page);
+        await this.driver.get(second_page);
         console.log('got post!');
     });
     it('find footer', async function() {

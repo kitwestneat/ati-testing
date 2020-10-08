@@ -1,4 +1,4 @@
-import { isDev } from './utils';
+import { isDev, sample } from './utils';
 
 export const WINDOW_SIZES = [
     { width: 375, height: 812 }, // iPhoneX
@@ -10,8 +10,6 @@ export const SITE_BASE = isDev() ?
     'https://mirror2.pbh-network.com' :
     'https://allthatsinteresting.com';
 export const FRONTPAGE = SITE_BASE;
-export const SINGLE_POST = SITE_BASE + '/emma-lazarus';
-export const SECOND_PAGE = SITE_BASE + '/women-in-world-war-2/2';
 export const ERROR_404_PAGE = SITE_BASE + '/this-page-should-404';
 
 export const LOGO_ALT_TEXT_HEADER = 'All That\'s Interesting';
@@ -32,19 +30,36 @@ export const AOL_SKYBOX_PLACEMENTS = ['ati_skybox'];
 export const AOL_ADHESION_PLACEMENTS = ['ati_adhesion'];
 export const AOL_MREC_PLACEMENTS = ['ati_mrec'];
 
-const GALLERY_POSTS = [
+function getPostUrl(slug_list: string[]): string {
+    const slug = sample(slug_list);
+
+    return SITE_BASE + '/' + slug;
+}
+
+export const getGalleryPostUrl = (): string => getPostUrl([
     'maps-that-explain-america',
     'colorized-photos',
     'bajau-people',
     'jacob-riis-photographs-how-the-other-half-lives',
     'ed-gein-house',
     'toraja-death-ritual',
-];
+]);
 
-const sample = <T>(items: T[]): T => items[Math.floor(Math.random() * items.length)];
+export const getPaginatedPostUrl = (): string => getPostUrl([
+    'women-in-world-war-2',
+    'black-billionaires',
+    'awful-jobs',
+    'women-warriors',
+    'horror-stories',
+    'black-inventors',
+]);
 
-export function getGalleryPostUrl(): string {
-    const slug = sample(GALLERY_POSTS);
+export const getSinglePostUrl = (): string => getPostUrl([
+    'emma-lazarus',
+    'vivian-liberto',
+    'frances-farmer-lobotomy',
+    'giacomo-casanova',
+    'king-tutankhamun-coffin',
+    'nutty-putty-cave',
+]);
 
-    return SITE_BASE + '/' + slug;
-}

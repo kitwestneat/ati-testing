@@ -5,6 +5,7 @@ import {
     AOL_URL,
     AOL_SKYBOX_PLACEMENTS,
     AOL_ADHESION_PLACEMENTS,
+    GAM_URL,
 } from './constants';
 import {
     getNetworkEntries,
@@ -17,11 +18,11 @@ import {
 import { assert } from 'chai';
 
 export async function test_inlines(this: Mocha.Context): Promise<void> {
+    const entry_filter = ({ name }: { name: string }): boolean =>
+        name.startsWith(GAM_URL) && name.includes(INLINE_UNIT_NAME);
     const driver = this.driver as webdriver.ThenableWebDriver;
     const start_entries = await getNetworkEntries(driver);
-    const start_inline_bids = start_entries.filter(
-        ({ name }: { name: string }) => name.startsWith(AMZN_URL) && name.includes(INLINE_UNIT_NAME)
-    );
+    const start_inline_bids = start_entries.filter(entry_filter);
 
     // inlines after the initial inline
     const inlines = await driver.findElements(webdriver.By.css('div.pbh-lazy-inline'));
@@ -41,11 +42,9 @@ export async function test_inlines(this: Mocha.Context): Promise<void> {
     await sleep(2000);
 
     const end_entries = await getNetworkEntries(driver);
-    const end_inline_bids = end_entries.filter(
-        ({ name }: { name: string }) => name.startsWith(AMZN_URL) && name.includes(INLINE_UNIT_NAME)
-    );
+    const end_inline_bids = end_entries.filter(entry_filter);
 
-    assert(end_inline_bids.length > start_inline_bids.length, 'Amazon bid on lazy loaded ads');
+    assert(end_inline_bids.length > start_inline_bids.length, 'GAM req on lazy loaded ads');
 }
 
 export async function test_skybox_and_adhesion(this: Mocha.Context): Promise<void> {

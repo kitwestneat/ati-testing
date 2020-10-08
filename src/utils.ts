@@ -163,3 +163,6 @@ export function stringHasPlacement(haystack: string, placements: Array<string | 
 export function getDom(driver: webdriver.ThenableWebDriver): Promise<string> {
     return driver.executeScript('return document.documentElement.outerHTML');
 }
+
+export const sample = <T>(items: T[]): T => items[Math.floor(Math.random() * items.length)];
+

@@ -1,13 +1,14 @@
 import * as webdriver from 'selenium-webdriver';
 import { assert } from 'chai';
-import { SINGLE_POST, ANALYTICS_URL } from './constants';
+import { getSinglePostUrl, ANALYTICS_URL } from './constants';
 import { getNetworkEntries, waitForAdInit } from './utils';
 import { test_skybox_and_adhesion, test_inlines } from './single-page-lib';
 
 describe('single page tests', function() {
     before(async function() {
-        console.log('getting', SINGLE_POST);
-        await this.driver.get(SINGLE_POST);
+        const single_post = getSinglePostUrl();
+        console.log('getting', single_post);
+        await this.driver.get(single_post);
         console.log('got post!');
     });
     it('find footer', async function() {
