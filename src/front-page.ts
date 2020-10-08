@@ -34,7 +34,7 @@ describe('frontpage tests', function() {
     it('frontpage check AOL bids for Adhesion & Skybox', async function() {
         await waitForDebugLog(
             this.driver,
-            (log) => log[0] == 'running provider' && log[1] == 'aol'
+            (log) => log[0] == 'running provider' && log[1] == 'prebidjs'
         );
         await sleep(1000);
 

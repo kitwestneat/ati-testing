@@ -45,11 +45,14 @@ export async function test_inlines(this: Mocha.Context): Promise<void> {
         ({ name }: { name: string }) => name.startsWith(AMZN_URL) && name.includes(INLINE_UNIT_NAME)
     );
 
-    assert(end_inline_bids.length > start_inline_bids.length, 'AOL bid on lazy loaded ads');
+    assert(end_inline_bids.length > start_inline_bids.length, 'Amazon bid on lazy loaded ads');
 }
 
 export async function test_skybox_and_adhesion(this: Mocha.Context): Promise<void> {
-    await waitForDebugLog(this.driver, (log) => log[0] == 'running provider' && log[1] == 'aol');
+    await waitForDebugLog(
+        this.driver,
+        (log) => log[0] == 'running provider' && log[1] == 'prebidjs'
+    );
     await sleep(1000);
 
     const entries = await getNetworkEntries(this.driver);
