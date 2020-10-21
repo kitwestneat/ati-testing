@@ -38,7 +38,7 @@ describe('404 page tests', function() {
     it('check AOL bids for Adhesion & Skybox', async function() {
         await waitForDebugLog(
             this.driver,
-            (log) => log[0] == 'running provider' && log[1] == 'prebidjs'
+            (log) => log[0] == 'running provider' && log[1] == 'aol'
         );
         await sleep(1000);
 
