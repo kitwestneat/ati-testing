@@ -18,6 +18,7 @@ import { WINDOW_SIZES } from './constants';
 import { send_email } from './mail';
 
 const logLocation = process.env['ATI_TEST_DIR'] || 'screenshots';
+const hostAddress = process.env['ATI_TEST_HOST'];
 
 before(async function() {
     // initializing chrome driver
@@ -31,6 +32,12 @@ before(async function() {
         options.addArguments(
             'host-resolver-rules=MAP allthatsinteresting.com 157.230.169.90,' +
                 ' MAP www.allthatsinteresting.com 157.230.169.90',
+            'ignore-certificate-errors'
+        );
+    } else if (hostAddress) {
+        options.addArguments(
+            'host-resolver-rules=MAP allthatsinteresting.com ' + hostAddress + ',' +
+                ' MAP www.allthatsinteresting.com ' + hostAddress,
             'ignore-certificate-errors'
         );
     }
