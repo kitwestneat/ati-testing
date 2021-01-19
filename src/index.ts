@@ -30,8 +30,8 @@ before(async function() {
         console.log('mapping ATI to use west coast servers');
 
         options.addArguments(
-            'host-resolver-rules=MAP allthatsinteresting.com 157.230.169.90,' +
-                ' MAP www.allthatsinteresting.com 157.230.169.90',
+            'host-resolver-rules=MAP allthatsinteresting.com 143.110.230.119,' +
+                ' MAP www.allthatsinteresting.com 143.110.230.119',
             'ignore-certificate-errors'
         );
     } else if (hostAddress) {
