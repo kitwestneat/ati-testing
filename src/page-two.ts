@@ -22,7 +22,7 @@ describe('page two tests', function() {
         const driver: webdriver.ThenableWebDriver = this.driver;
         await waitForAdInit(driver);
     });
-    it('check AOL bids for Adhesion & Skybox', test_skybox_and_adhesion);
+    it('check OpenX bids for Adhesion & Skybox', test_skybox_and_adhesion);
     it('inlines are lazy loaded', test_inlines);
     it('test analytics loaded', async function() {
         const entries = await getNetworkEntries(this.driver);

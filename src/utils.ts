@@ -76,7 +76,17 @@ export function pbh_config_get(driver: webdriver.ThenableWebDriver, key: string)
 }
 
 export function getPbhDebug(driver: webdriver.ThenableWebDriver): Promise<any> {
-    return driver.executeScript(() => (top as any).circJson((top as any).PbhAdUnit.debug_buffer));
+    console.log('getting pbh debug');
+
+    return driver.executeScript(() => {
+        try {
+            return (top as any).circJson((top as any).PbhAdUnit.debug_buffer);
+        } catch (e) {
+            console.error('pbh debug buffer: error calling circJson');
+        }
+
+        return [];
+    });
 }
 
 export function setCircJson(driver: webdriver.ThenableWebDriver): Promise<void> {
@@ -130,10 +140,19 @@ export function clickElement(
 export function waitForDebugLog(
     driver: webdriver.ThenableWebDriver,
     logCb: (log: string[]) => boolean,
-    timeout = 6000
+    timeout = 10000
 ): Promise<boolean> {
-    return driver.wait(async () => {
-        const logs = JSON.parse(await getPbhDebug(driver));
+    const logChecker = async (): Promise<boolean> => {
+        console.log('checking logs');
+        const pbhDebug = await getPbhDebug(driver);
+        let logs = [] as string[][];
+        try {
+            logs = JSON.parse(pbhDebug);
+        } catch (e) {
+            console.error('error parsing debug', pbhDebug);
+
+            return false;
+        }
 
         if (!logs || !logs.findIndex) {
             console.log('no debug logs found', logs);
@@ -142,7 +161,33 @@ export function waitForDebugLog(
         }
 
         return logs.findIndex(logCb) != -1;
-    }, timeout);
+    };
+
+    const startTime = Date.now();
+    const timeChecker = async (resolve: () => void, reject: () => void): Promise<void> => {
+        try {
+            const result = await logChecker();
+            if (result) {
+                resolve();
+
+                return;
+            }
+        } catch (e) {
+            console.error('error checking logs:', e);
+            // we'll try again if there is time
+        }
+
+        if (Date.now() > startTime + timeout) {
+            console.log('timeout waiting for logs');
+            reject();
+
+            return;
+        }
+        setTimeout(() => timeChecker(resolve, reject), 1000);
+    };
+
+    return new Promise(timeChecker);
+    // return driver.wait(logChecker, timeout);
 }
 
 export function waitForAdInit(
@@ -165,4 +210,3 @@ export function getDom(driver: webdriver.ThenableWebDriver): Promise<string> {
 }
 
 export const sample = <T>(items: T[]): T => items[Math.floor(Math.random() * items.length)];
-

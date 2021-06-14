@@ -66,6 +66,7 @@ before(async function() {
 
 beforeEach(async function() {
     await setCircJson(this.driver);
+    console.log('circ json set');
 });
 
 afterEach(async function() {
@@ -100,7 +101,8 @@ interface HandleFailureOpts {
 async function handleFailure({ testCaseName, driver }: HandleFailureOpts): Promise<void> {
     console.log(`Test: ${testCaseName}, Status: Failed!`);
     const filenames: string[] = [];
-    const body = 'Please kindly find error logs attached.\n';
+    const url = await driver.getCurrentUrl();
+    const body = 'Please kindly find error logs attached.\nURL: ' + url;
 
     // capturing screenshot if test fails
     driver.takeScreenshot().then((data: any) => {

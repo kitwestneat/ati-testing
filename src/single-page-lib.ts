@@ -2,9 +2,9 @@ import * as webdriver from 'selenium-webdriver';
 import {
     AMZN_URL,
     INLINE_UNIT_NAME,
-    AOL_URL,
-    AOL_SKYBOX_PLACEMENTS,
-    AOL_ADHESION_PLACEMENTS,
+    OPENX_URL,
+    OPENX_SKYBOX_PLACEMENT,
+    OPENX_ADHESION_PLACEMENT,
     GAM_URL,
 } from './constants';
 import {
@@ -48,19 +48,19 @@ export async function test_inlines(this: Mocha.Context): Promise<void> {
 }
 
 export async function test_skybox_and_adhesion(this: Mocha.Context): Promise<void> {
-    await waitForDebugLog(this.driver, (log) => log[0] == 'running provider' && log[1] == 'aol');
+    await waitForDebugLog(this.driver, (log) => log[0] == 'running provider' && log[1] == 'prebidjs');
     await sleep(1000);
 
     const entries = await getNetworkEntries(this.driver);
     const skybox_bid = entries.filter(
         ({ name }: { name: string }) =>
-            name.startsWith(AOL_URL) &&
-            AOL_SKYBOX_PLACEMENTS.find((placement) => name.includes('' + placement))
+            name.startsWith(OPENX_URL) &&
+            OPENX_SKYBOX_PLACEMENT.find((placement) => name.includes('' + placement))
     );
     const adhesion_bid = entries.filter(
         ({ name }: { name: string }) =>
-            name.startsWith(AOL_URL) &&
-            AOL_ADHESION_PLACEMENTS.find((placement) => name.includes('' + placement))
+            name.startsWith(OPENX_URL) &&
+            OPENX_ADHESION_PLACEMENT.find((placement) => name.includes('' + placement))
     );
     const mobile_skybox_enabled = await pbh_config_get(this.driver, 'enable_mobile_skybox');
 

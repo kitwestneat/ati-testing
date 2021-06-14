@@ -3,9 +3,9 @@ import { assert } from 'chai';
 import {
     ERROR_404_PAGE,
     ANALYTICS_URL,
-    AOL_URL,
-    AOL_SKYBOX_PLACEMENTS,
-    AOL_ADHESION_PLACEMENTS,
+    OPENX_SKYBOX_PLACEMENT,
+    OPENX_URL,
+    OPENX_ADHESION_PLACEMENT,
 } from './constants';
 import {
     sleep,
@@ -20,8 +20,8 @@ import {
 describe('404 page tests', function() {
     before(async function() {
         console.log('getting', ERROR_404_PAGE);
-        await this.driver.get(ERROR_404_PAGE);
-        console.log('got post!');
+        const resp = await this.driver.get(ERROR_404_PAGE);
+        console.log('got post! resp:', resp);
     });
     it('find footer', async function() {
         const driver: webdriver.ThenableWebDriver = this.driver;
@@ -33,25 +33,26 @@ describe('404 page tests', function() {
     });
     it('PbhAdUnit.init called', async function() {
         const driver: webdriver.ThenableWebDriver = this.driver;
-        await waitForAdInit(driver);
+        const resp = await waitForAdInit(driver);
+        console.log('resp', resp);
     });
-    it('check AOL bids for Adhesion & Skybox', async function() {
+    it('check OpenX bids for Adhesion & Skybox', async function() {
         await waitForDebugLog(
             this.driver,
-            (log) => log[0] == 'running provider' && log[1] == 'aol'
+            (log) => log[0] == 'running provider' && log[1] == 'prebidjs'
         );
         await sleep(1000);
 
         const entries = await getNetworkEntries(this.driver);
         const skybox_bid = entries.filter(
             ({ name }: { name: string }) =>
-                name.startsWith(AOL_URL) &&
-                stringHasPlacement(name, AOL_SKYBOX_PLACEMENTS)
+                name.startsWith(OPENX_URL) &&
+                stringHasPlacement(name, OPENX_SKYBOX_PLACEMENT)
         );
         const adhesion_bid = entries.filter(
             ({ name }: { name: string }) =>
-                name.startsWith(AOL_URL) &&
-                stringHasPlacement(name, AOL_ADHESION_PLACEMENTS)
+                name.startsWith(OPENX_URL) &&
+                stringHasPlacement(name, OPENX_ADHESION_PLACEMENT)
         );
         const mobile_skybox_enabled = await pbh_config_get(this.driver, 'enable_mobile_skybox');
         if (this.windowSize && isMobile(this.windowSize.width) && !mobile_skybox_enabled) {

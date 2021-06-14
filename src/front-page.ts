@@ -3,13 +3,11 @@ import { assert } from 'chai';
 import {
     FRONTPAGE,
     LOGO_ALT_TEXT_HEADER,
-    AMZN_URL,
-    MREC_UNIT_NAME,
     ANALYTICS_URL,
-    AOL_URL,
-    AOL_SKYBOX_PLACEMENTS,
-    AOL_ADHESION_PLACEMENTS,
-    AOL_MREC_PLACEMENTS,
+    OPENX_SKYBOX_PLACEMENT,
+    OPENX_URL,
+    OPENX_ADHESION_PLACEMENT,
+    OPENX_MREC_PLACEMENT,
 } from './constants';
 import { sleep, getNetworkEntries, scrollToBottom, waitForAdInit, waitForDebugLog, stringHasPlacement } from './utils';
 
@@ -31,10 +29,10 @@ describe('frontpage tests', function() {
         const driver: webdriver.ThenableWebDriver = this.driver;
         await waitForAdInit(driver);
     });
-    it('frontpage check AOL bids for Adhesion & Skybox', async function() {
+    it('frontpage check OpenX bids for Adhesion & Skybox', async function() {
         await waitForDebugLog(
             this.driver,
-            (log) => log[0] == 'running provider' && log[1] == 'aol'
+            (log) => log[0] == 'running provider' && log[1] == 'prebidjs'
         );
         await sleep(1000);
 
@@ -42,16 +40,16 @@ describe('frontpage tests', function() {
 
         const skybox_bid = entries.filter(
             ({ name }: { name: string }) =>
-                name.startsWith(AOL_URL) &&
-                stringHasPlacement(name, AOL_SKYBOX_PLACEMENTS)
+                name.startsWith(OPENX_URL) &&
+                stringHasPlacement(name, OPENX_SKYBOX_PLACEMENT)
         );
         const adhesion_bid = entries.filter(
             ({ name }: { name: string }) =>
-                name.startsWith(AOL_URL) &&
-                stringHasPlacement(name, AOL_ADHESION_PLACEMENTS)
+                name.startsWith(OPENX_URL) &&
+                stringHasPlacement(name, OPENX_ADHESION_PLACEMENT)
         );
-        assert(skybox_bid.length >= 1, 'found skybox amazon bid requests');
-        assert(adhesion_bid.length >= 1, 'found adhesion amazon bid requests');
+        assert(skybox_bid.length >= 1, 'found skybox bid requests');
+        assert(adhesion_bid.length >= 1, 'found adhesion bid requests');
         if (skybox_bid.length > 1) {
             console.warn('found more than one skybox bid');
         }
@@ -59,10 +57,10 @@ describe('frontpage tests', function() {
             console.warn('found more than one adhesion bid');
         }
     });
-    it('mrecs are lazy loaded', async function() {
+    it('OpenX mrecs are lazy loaded', async function() {
         const mrec_filter = ({ name }: { name: string }): boolean =>
-            name.startsWith(AOL_URL) &&
-                stringHasPlacement(name, AOL_MREC_PLACEMENTS);
+            name.startsWith(OPENX_URL) &&
+                stringHasPlacement(name, OPENX_MREC_PLACEMENT);
 
         const start_entries = await getNetworkEntries(this.driver);
         const start_mrec_bids = start_entries.filter(mrec_filter);

@@ -22,9 +22,9 @@ find /home/khw/ati-testing/screenshots/ -mtime +7 -delete
 
 PATH=$PATH:/usr/local/bin
 yarn test >& /tmp/ati-testing.log || had_error
-yarn sfo-test >>& /tmp/ati-testing.log || had_error
+yarn sfo-test >& /tmp/ati-testing-sfo.log || had_error
 
-grep failing /tmp/ati-testing.log
+grep failing /tmp/ati-testing*.log
 
 rm -rf $TMP_DIR
 
