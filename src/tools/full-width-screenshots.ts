@@ -1,8 +1,8 @@
 import * as fs from 'fs';
 import * as webdriver from 'selenium-webdriver';
 import * as chrome from 'selenium-webdriver/chrome';
-import { WINDOW_SIZES } from './constants';
-import { sleep } from './utils';
+import { WINDOW_SIZES } from '../constants';
+import { sleep } from '../utils';
 
 const BASE_URL = 'https://mirror2.pbh-network.com/';
 const TEST_URLS = [
@@ -30,7 +30,7 @@ function initChrome(): webdriver.ThenableWebDriver {
     return new webdriver.Builder().withCapabilities(capa).setChromeOptions(options).build();
 }
 
-async function saveScreenshot(slug: string, size: string) {
+async function saveScreenshot(driver: any, slug: string, size: string) {
     const filename = `/tmp/${slug}.${size}.png`;
 
     const data =  await driver.takeScreenshot();
@@ -46,7 +46,8 @@ async function main() {
             await driver.get(BASE_URL + url);
             await sleep(SLEEP_TIME);
 
-            await saveScreenshot(url, windowSize.width + 'x' + windowSize.height);
+            await saveScreenshot(driver, url, windowSize.width + 'x' + windowSize.height);
         }
     }
 }
+main();
