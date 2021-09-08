@@ -14,7 +14,7 @@ const TEST_URLS = [
     'dumbo-octopus',
     'barreleye-fish',
 ];
-const SLEEP_TIME = 5000;
+const SLEEP_TIME = 3000;
 
 function initChrome(): webdriver.ThenableWebDriver {
     const options = new chrome.Options();
@@ -33,8 +33,9 @@ function initChrome(): webdriver.ThenableWebDriver {
 async function saveScreenshot(driver: any, slug: string, size: string) {
     const filename = `/tmp/${slug}.${size}.png`;
 
-    const data =  await driver.takeScreenshot();
+    const data = await driver.takeScreenshot();
     fs.writeFileSync(filename, data, 'base64');
+    console.log('write', filename);
 }
 
 async function main() {
@@ -47,6 +48,13 @@ async function main() {
             await sleep(SLEEP_TIME);
 
             await saveScreenshot(driver, url, windowSize.width + 'x' + windowSize.height);
+        }
+        const fullSize = { width: windowSize.width, height: 2048 };
+        driver.manage().window().setRect(fullSize);
+        for (const url of TEST_URLS) {
+            await driver.get(BASE_URL + url);
+            await sleep(SLEEP_TIME);
+            await saveScreenshot(driver, url, fullSize.width + 'x' + fullSize.height);
         }
     }
 }
