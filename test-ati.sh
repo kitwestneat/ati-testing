@@ -4,8 +4,8 @@ print_error() {
 	echo "Site error! Check logs and screenshots"
 
 	echo
-	echo "/tmp/ati-testing.log:"
-	cat /tmp/ati-testing.log
+	echo $ERROR_LOG":"
+	cat $ERROR_LOG
 }
 
 had_error() {
@@ -21,8 +21,10 @@ mkdir -p /home/khw/ati-testing/screenshots/
 find /home/khw/ati-testing/screenshots/ -mtime +7 -delete
 
 PATH=$PATH:/usr/local/bin
-yarn test >& /tmp/ati-testing.log || had_error
-yarn sfo-test >& /tmp/ati-testing-sfo.log || had_error
+ERROR_LOG=/tmp/ati-testing.log 
+yarn test >& $ERROR_LOG || had_error
+ERROR_LOG=/tmp/ati-testing-sfo.log 
+yarn sfo-test >& $ERROR_LOG || had_error
 
 grep failing /tmp/ati-testing*.log
 

@@ -164,7 +164,7 @@ export function waitForDebugLog(
     };
 
     const startTime = Date.now();
-    const timeChecker = async (resolve: () => void, reject: () => void): Promise<void> => {
+    const timeChecker = async (resolve: (val?: any) => void, reject: () => void): Promise<void> => {
         try {
             const result = await logChecker();
             if (result) {
