@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "random-test": "NODE_ENV=dev FWH_TEST_SLUG='?random=1&ts='$(date +%s) ts-node src/tools/full-width-screenshots.ts",
+    "fwh-test": "NODE_ENV=dev ts-node src/tools/full-width-screenshots.ts",
     "test": "yarn mk --recursive src/*.ts",
     "sfo-test": "yarn sfo --recursive src/*.ts",
     "dev": "NODE_ENV=dev yarn test",

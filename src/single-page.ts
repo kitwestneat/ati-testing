@@ -20,12 +20,12 @@ describe('single page tests', function() {
     });
     it('PbhAdUnit.init called', async function() {
         const driver: webdriver.ThenableWebDriver = this.driver;
-	await sleep(5000);
-	try {
-		await waitForAdInit(driver);
-	} catch(e) {
-		console.error('caught an error', e);
-	}
+        await sleep(5000);
+        try {
+            await waitForAdInit(driver);
+        } catch (e) {
+            console.error('caught an error', e);
+        }
     });
     it('check OpenX bids for Adhesion & Skybox', test_skybox_and_adhesion);
     it('inlines are lazy loaded', test_inlines);
