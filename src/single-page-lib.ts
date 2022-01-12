@@ -12,7 +12,7 @@ import {
     pbh_config_get,
     scrollToElement,
     sleep,
-    waitForDebugLog,
+    waitForPrebid,
     isMobile,
 } from './utils';
 import { assert } from 'chai';
@@ -48,18 +48,21 @@ export async function test_inlines(this: Mocha.Context): Promise<void> {
 }
 
 export async function test_skybox_and_adhesion(this: Mocha.Context): Promise<void> {
-    await waitForDebugLog(this.driver, (log) => log[0] == 'running provider' && log[1] == 'prebidjs');
+    await waitForPrebid(this.driver);
     await sleep(1000);
 
     const entries = await getNetworkEntries(this.driver);
-    const skybox_bid = entries.filter(
+    const openx_entries = entries.filter(
+        ({ name }: { name: string }) => name.startsWith(OPENX_URL)
+    );
+    console.log(JSON.stringify(openx_entries, null, 4));
+
+    const skybox_bid = openx_entries.filter(
         ({ name }: { name: string }) =>
-            name.startsWith(OPENX_URL) &&
             OPENX_SKYBOX_PLACEMENT.find((placement) => name.includes('' + placement))
     );
-    const adhesion_bid = entries.filter(
+    const adhesion_bid = openx_entries.filter(
         ({ name }: { name: string }) =>
-            name.startsWith(OPENX_URL) &&
             OPENX_ADHESION_PLACEMENT.find((placement) => name.includes('' + placement))
     );
     const mobile_skybox_enabled = await pbh_config_get(this.driver, 'enable_mobile_skybox');

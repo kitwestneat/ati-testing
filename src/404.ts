@@ -13,7 +13,7 @@ import {
     pbh_config_get,
     isMobile,
     waitForAdInit,
-    waitForDebugLog,
+    waitForPrebid,
     stringHasPlacement,
 } from './utils';
 
@@ -37,11 +37,8 @@ describe('404 page tests', function() {
         console.log('resp', resp);
     });
     it('check OpenX bids for Adhesion & Skybox', async function() {
-        await waitForDebugLog(
-            this.driver,
-            (log) => log[0] == 'running provider' && log[1] == 'prebidjs'
-        );
-        await sleep(1000);
+        await waitForPrebid(this.driver);
+        await sleep(2000);
 
         const entries = await getNetworkEntries(this.driver);
         const skybox_bid = entries.filter(

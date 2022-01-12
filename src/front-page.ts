@@ -9,7 +9,8 @@ import {
     OPENX_ADHESION_PLACEMENT,
     OPENX_MREC_PLACEMENT,
 } from './constants';
-import { sleep, getNetworkEntries, scrollToBottom, waitForAdInit, waitForDebugLog, stringHasPlacement } from './utils';
+import { sleep, getNetworkEntries, scrollToBottom, waitForAdInit,
+    waitForPrebid, stringHasPlacement } from './utils';
 
 describe('frontpage tests', function() {
     this.timeout(60000);
@@ -30,10 +31,7 @@ describe('frontpage tests', function() {
         await waitForAdInit(driver);
     });
     it('frontpage check OpenX bids for Adhesion & Skybox', async function() {
-        await waitForDebugLog(
-            this.driver,
-            (log) => log[0] == 'running provider' && log[1] == 'prebidjs'
-        );
+        await waitForPrebid(this.driver);
         await sleep(1000);
 
         const entries = await getNetworkEntries(this.driver);

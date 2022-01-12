@@ -17,6 +17,7 @@ const TEST_SLUGS = env_slug ? [env_slug] : [
     'annette-kellerman',
     'dumbo-octopus',
     'barreleye-fish',
+    'frank-costello',
 ];
 const SLEEP_TIME = 3000;
 

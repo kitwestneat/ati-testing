@@ -1,2 +1,2 @@
 cd /home/khw/ati-testing
-yarn ts-node src/tools/full-width-screenshots.ts
+/usr/local/bin/yarn ts-node src/tools/full-width-screenshots.ts

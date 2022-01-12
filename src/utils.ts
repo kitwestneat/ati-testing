@@ -196,7 +196,18 @@ export function waitForAdInit(
 ): Promise<boolean> {
     return waitForDebugLog(
         driver,
-        (log) => typeof log[0] == 'string' && log[0] == 'PbhAdUnit.init',
+        (log) => typeof log[1] == 'string' && log[1] == 'PbhAdUnit.init',
+        timeout
+    );
+}
+
+export function waitForPrebid(
+    driver: webdriver.ThenableWebDriver,
+    timeout?: number
+): Promise<boolean> {
+    return waitForDebugLog(
+        driver,
+        (log) => log[1] == 'running provider' && log[2] == 'prebidjs',
         timeout
     );
 }
