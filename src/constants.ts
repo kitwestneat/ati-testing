@@ -38,12 +38,9 @@ function getPostUrl(slug_list: string[]): string {
 }
 
 export const getGalleryPostUrl = (): string => getPostUrl([
-    'maps-that-explain-america',
-    'colorized-photos',
-    'bajau-people',
-    'jacob-riis-photographs-how-the-other-half-lives',
-    'ed-gein-house',
-    'toraja-death-ritual',
+    'color-civil-war-photos',
+    'bowery',
+    'quokka',
 ]);
 
 export const getPaginatedPostUrl = (): string => getPostUrl([

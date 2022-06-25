@@ -49,7 +49,7 @@ export async function test_inlines(this: Mocha.Context): Promise<void> {
 
 export async function test_skybox_and_adhesion(this: Mocha.Context): Promise<void> {
     await waitForPrebid(this.driver);
-    await sleep(1000);
+    await sleep(3000);
 
     const entries = await getNetworkEntries(this.driver);
     const openx_entries = entries.filter(
