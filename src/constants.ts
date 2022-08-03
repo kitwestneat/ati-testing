@@ -1,14 +1,18 @@
 import { isDev, sample } from './utils';
 
+export const SFO_IP = '143.110.230.119';
+
 export const WINDOW_SIZES = [
     { width: 375, height: 812 }, // iPhoneX
     { width: 768, height: 1024 }, // iPad
     { width: 1440, height: 633 }, // laptop
 ];
 
-export const SITE_BASE = isDev() ?
-    'https://mirror2.pbh-network.com' :
-    'https://allthatsinteresting.com';
+export const DOMAIN = isDev() ?
+    'mirror2.pbh-network.com' :
+    'allthatsinteresting.com';
+
+export const SITE_BASE = 'https://' + DOMAIN;
 export const FRONTPAGE = SITE_BASE;
 export const ERROR_404_PAGE = SITE_BASE + '/this-page-should-404';
 

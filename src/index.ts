@@ -14,11 +14,11 @@ import {
     getDom,
     setCircJson,
 } from './utils';
-import { WINDOW_SIZES } from './constants';
+import { DOMAIN, SFO_IP, WINDOW_SIZES } from './constants';
 import { send_email } from './mail';
 
 const logLocation = process.env['ATI_TEST_DIR'] || 'screenshots';
-const hostAddress = process.env['ATI_TEST_HOST'];
+const hostAddress = isSfo() ? SFO_IP : process.env['ATI_TEST_HOST'];
 
 before(async function() {
     // initializing chrome driver
@@ -26,18 +26,10 @@ before(async function() {
     if (!isDev()) {
         options.addArguments('headless', 'disable-gpu');
     }
-    if (isSfo()) {
-        console.log('mapping ATI to use west coast servers');
-
+    if (hostAddress) {
+        console.log('mapping ATI [' + DOMAIN + '] to use ' + hostAddress);
         options.addArguments(
-            'host-resolver-rules=MAP allthatsinteresting.com 143.110.230.119,' +
-                ' MAP www.allthatsinteresting.com 143.110.230.119',
-            'ignore-certificate-errors'
-        );
-    } else if (hostAddress) {
-        options.addArguments(
-            'host-resolver-rules=MAP allthatsinteresting.com ' + hostAddress + ',' +
-                ' MAP www.allthatsinteresting.com ' + hostAddress,
+            `host-resolver-rules=MAP ${DOMAIN} ${hostAddress}, MAP ${DOMAIN} ${hostAddress}`,
             'ignore-certificate-errors'
         );
     }
@@ -46,18 +38,25 @@ before(async function() {
     prefs.setLevel(webdriver.logging.Type.BROWSER, webdriver.logging.Level.ALL);
     options.setLoggingPrefs(prefs);
 
-    const capa = webdriver.Capabilities.chrome();
-    capa.set('pageLoadStrategy', 'eager');
-
-    this.driver = new webdriver.Builder().withCapabilities(capa).setChromeOptions(options).build();
-
     const windowSize = listRandom(WINDOW_SIZES);
     if (!windowSize) {
         console.error('could not select random window size');
     } else {
         console.log('testing size', windowSize);
-        this.driver.manage().window().setRect(windowSize);
+        options.addArguments(`window-size=${windowSize.width},${windowSize.height}`);
         this.windowSize = windowSize;
+    }
+
+    const capa = webdriver.Capabilities.chrome();
+    capa.set('pageLoadStrategy', 'eager');
+
+    this.driver = new webdriver.Builder().withCapabilities(capa).setChromeOptions(options).build();
+
+    // is this necessary?
+    if (!windowSize) {
+        console.error('could not select random window size');
+    } else {
+        this.driver.manage().window().setRect(windowSize);
     }
 
     console.log('started chrome');
