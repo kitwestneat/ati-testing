@@ -33,13 +33,15 @@ export async function test_inlines(this: Mocha.Context): Promise<void> {
     }
     const first_lazy_inline = inlines[inline_load_count - 1];
     await scrollToElement(driver, first_lazy_inline);
-    const loadedInline = await driver.wait(
-        webdriver.until.elementLocated(webdriver.By.css('div.pbh-lazy-inline.pbh_inline')),
-        120000
-    );
-    assert(loadedInline, 'lazy loaded an inline unit');
 
-    await sleep(2000);
+    // wait for lazy loader to load
+    await sleep(1000);
+    while (!(await first_lazy_inline.getAttribute('class')).includes('pbh_inline')) {
+        await sleep(1000);
+    }
+
+    // wait for bid to complete
+    await sleep(4000);
 
     const end_entries = await getNetworkEntries(driver);
     const end_inline_bids = end_entries.filter(entry_filter);
